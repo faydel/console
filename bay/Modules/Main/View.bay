@@ -1,0 +1,121 @@
+/*!
+ *  Bayrell Development Console
+ *
+ *  (c) Copyright 2018 "Ildar Bikmamatov" <support@bayrell.org>
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      https://www.bayrell.org/licenses/APACHE-LICENSE-2.0.html
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+namespace BayrellConsole.Modules.Main;
+
+use RuntimeUI.Render.CoreView;
+use BayrellConsole.Modules.Main.Assets;
+use BayrellConsole.Modules.Main.Manager;
+use BayrellConsole.Modules.Main.Model;
+use BayrellUI.Tabs.Tabs;
+use BayrellUI.Tree.Tree;
+
+
+struct View extends CoreView
+{
+	
+	
+	/**
+	 * Returns manager name
+	 */
+	lambda string managerName() => classof Manager;
+	
+	
+	
+	/**
+	 * Returns model name
+	 */
+	lambda string modelName() => classof Model;
+	
+	
+	
+	/**
+	 * Required Assets
+	 */
+	lambda Collection<string> assets() =>
+		[
+			classof Assets,
+		]
+	;
+	
+	
+	
+	/**
+	 * Required components
+	 */
+	lambda Collection<string> components() =>
+		[
+			classof Tabs,
+			classof Tree,
+		]
+	;
+	
+	
+	
+	/**
+	 * Component css
+	 */
+	lambda string css(Dict<string> vars) => 
+		@css{
+			%console_left, %console_workspace{
+				display: inline-block;
+				vertical-align: top;
+			}
+			%console_left{
+				width: 300px;
+			}
+			%console_workspace{
+				width: calc(100% - 300px);
+			}
+		}
+	;
+	
+	
+	
+	/**
+	 * Component render
+	 */
+	lambda Collection<UIStruct> render(Model data, Collection<UIStruct> children) =>
+		
+		<div @key='main' @class='console_main'>
+			
+			<div @class='console_left'>
+				<Tree @model={ data.navigator } @key='navigator' @control='navigator'></Tree>
+			</div>
+			<div @class='console_workspace'>
+				<Tabs>
+					{ static::renderWorkspaceTabs(data) }
+				</Tabs>
+			</div>
+			
+		</div>
+		
+	;
+	
+	
+	
+	/**
+	 * Render workspace
+	 */
+	pure Collection<UIStruct> renderWorkspaceTabs(Model data)
+	{
+		Collection<UIStruct> res = new Collection();
+		return res;
+	}
+	
+}

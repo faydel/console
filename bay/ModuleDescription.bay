@@ -1,0 +1,66 @@
+namespace BayrellConsole;
+
+use Runtime.Interfaces.ContextInterface;
+use Runtime.Interfaces.ModuleDescriptionInterface;
+
+
+class ModuleDescription implements ModuleDescriptionInterface
+{
+	
+	
+	/**
+	 * Returns module name
+	 * @return string
+	 */
+	public static string getName(){
+		return "BayrellConsole";
+	}
+	
+	
+	
+	/**
+	 * Returns module name
+	 * @return string
+	 */	
+	public static string getModuleVersion(){
+		return "0.0.1";
+	}
+	
+	
+	
+	/**
+	 * Init context
+	 * @param ContextInterface context
+	 */
+	public static void initContext(ContextInterface context){}
+	
+	
+	
+	/**
+	 * Called then module registed in context
+	 * @param ContextInterface context
+	 */
+	public static void onRegister(ContextInterface context){}
+	
+	
+	
+	/**
+	 * Called then context read config
+	 * @param Map<mixed> config
+	 */
+	public static void onReadConfig(ContextInterface context, Map<mixed> config){}
+	
+	
+	
+	/**
+	 * Returns required modules
+	 * @return Map<string, string>
+	 */	
+	public static Map<string, string> getRequiredModules(ContextInterface context){
+		return {
+			'BayrellConsole.Modules.Main': '*',
+		};
+	}
+	
+	
+}
