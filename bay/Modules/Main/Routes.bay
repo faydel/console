@@ -18,7 +18,10 @@
 
 namespace BayrellConsole.Modules.Main;
 
+use Runtime.Interfaces.ContextInterface;
 use RuntimeUI.Annotations.RouteInfo;
+use RuntimeUI.Http.ApiRequest;
+use RuntimeUI.Http.ApiResult;
 use RuntimeUI.Http.Response;
 use RuntimeUI.Render.CoreRoute;
 use RuntimeUI.Render.CoreLayout;
@@ -42,107 +45,11 @@ class Routes extends CoreRoute
 		"uri": "/console/", 
 		"name": "bayrell:console:main" 
 	}
-	public static async WebContainer IndexAction(WebContainer container)
+	public static async WebContainer IndexAction(WebContainer container, ContextInterface context)
 	{
-		/* Create navigator model */
-		TreeModel navigator = new TreeModel
-		{
-			"selected": "",
-			"items": [
-				
-				new TreeItem{
-					"name": "App",
-					"icon": "folder",
-					"items": [
-						new TreeItem{
-							"name": "bay",
-							"icon": "folder",
-							"items": [
-								new TreeItem{
-									"name": "Main",
-									"icon": "folder",
-									"items": [
-										new TreeItem{
-											"name": "Assets.bay",
-											"icon": "file"
-										},
-										new TreeItem{
-											"name": "Manager.bay",
-											"icon": "file"
-										},
-										new TreeItem{
-											"name": "Model.bay",
-											"icon": "file"
-										},
-										new TreeItem{
-											"name": "ModuleDescription.bay",
-											"icon": "file"
-										},
-										new TreeItem{
-											"name": "Routes.bay",
-											"icon": "file"
-										},
-										new TreeItem{
-											"name": "View.bay",
-											"icon": "file"
-										},
-									],
-								},
-								new TreeItem{
-									"name": "ModuleDescription.bay",
-									"icon": "file"
-								},
-							],
-						},
-					]
-				},
-				new TreeItem{
-					"name": "BayrellUI",
-					"icon": "folder",
-					"items": [
-						new TreeItem{
-							"name": "bay",
-							"icon": "folder",
-							"items": [
-								new TreeItem{
-									"name": "Button",
-									"icon": "folder",
-									"items": [
-									],
-								},
-								new TreeItem{
-									"name": "Input",
-									"icon": "folder",
-									"items": [
-									],
-								},
-								new TreeItem{
-									"name": "ListSort",
-									"icon": "folder",
-									"items": [
-									],
-								},
-								new TreeItem{
-									"name": "Tabs",
-									"icon": "folder",
-									"items": [
-									],
-								},
-								new TreeItem{
-									"name": "Tree",
-									"icon": "folder",
-									"items": [
-									],
-								},
-							],
-						},
-					]
-				}
-				
-			],
-		};
 		
-		
+		ApiResult res = await ApiRequest::callApi("BayrellConsole.Modules.Main.Api", "", "loadNavigation", {}, context);
+		TreeModel navigator = res.result;
 		
 		/* Create model */
 		Model model = new Model

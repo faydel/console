@@ -1,0 +1,143 @@
+/*!
+ *  Bayrell Development Console
+ *
+ *  (c) Copyright 2018 "Ildar Bikmamatov" <support@bayrell.org>
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      https://www.bayrell.org/licenses/APACHE-LICENSE-2.0.html
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+namespace BayrellConsole.Modules.Main;
+
+use Runtime.CoreStruct;
+use Runtime.RuntimeConstant;
+use RuntimeUI.Annotations.ApiMethod;
+use RuntimeUI.Http.ApiResult;
+use BayrellUI.Tree.TreeModel;
+use BayrellUI.Tree.TreeItem;
+
+
+class Api extends CoreStruct
+{
+	
+	
+	/**
+	 * Load navigations for developmnet console
+	 */
+	@ApiMethod{ "name": "loadNavigation", "space": "" } 
+	public static async ApiResult loadNavigation(ContextInterface context, ApiRequest req)
+	{
+		ApiResult res = new ApiResult();
+		
+		/* Create navigator model */
+		TreeModel navigator = new TreeModel
+		{
+			"selected": "",
+			"items": [
+				
+				new TreeItem{
+					"name": "App",
+					"icon": "folder",
+					"items": [
+						new TreeItem{
+							"name": "bay",
+							"icon": "folder",
+							"items": [
+								new TreeItem{
+									"name": "Main",
+									"icon": "folder",
+									"items": [
+										new TreeItem{
+											"name": "Assets.bay",
+											"icon": "file"
+										},
+										new TreeItem{
+											"name": "Manager.bay",
+											"icon": "file"
+										},
+										new TreeItem{
+											"name": "Model.bay",
+											"icon": "file"
+										},
+										new TreeItem{
+											"name": "ModuleDescription.bay",
+											"icon": "file"
+										},
+										new TreeItem{
+											"name": "Routes.bay",
+											"icon": "file"
+										},
+										new TreeItem{
+											"name": "View.bay",
+											"icon": "file"
+										},
+									],
+								},
+								new TreeItem{
+									"name": "ModuleDescription.bay",
+									"icon": "file"
+								},
+							],
+						},
+					]
+				},
+				new TreeItem{
+					"name": "BayrellUI",
+					"icon": "folder",
+					"items": [
+						new TreeItem{
+							"name": "bay",
+							"icon": "folder",
+							"items": [
+								new TreeItem{
+									"name": "Button",
+									"icon": "folder",
+									"items": [
+									],
+								},
+								new TreeItem{
+									"name": "Input",
+									"icon": "folder",
+									"items": [
+									],
+								},
+								new TreeItem{
+									"name": "ListSort",
+									"icon": "folder",
+									"items": [
+									],
+								},
+								new TreeItem{
+									"name": "Tabs",
+									"icon": "folder",
+									"items": [
+									],
+								},
+								new TreeItem{
+									"name": "Tree",
+									"icon": "folder",
+									"items": [
+									],
+								},
+							],
+						},
+					]
+				}
+				
+			],
+		};
+		
+		res <= result <= navigator;
+		return ApiResult::setError(res, RuntimeConstant::ERROR_OK, "Ok");
+	}
+	
+}

@@ -95,6 +95,7 @@ struct View extends CoreView
 		<div @key='main' @class='console_main'>
 			
 			<div @class='console_left'>
+				<button @control='reload_button'>Reload</button>
 				<Tree @model={ data.navigator } @key='navigator' @control='navigator'></Tree>
 			</div>
 			<div @class='console_workspace'>

@@ -20,12 +20,18 @@ namespace BayrellConsole.Modules.Main;
 
 use Runtime.Interfaces.ContextInterface;
 use Runtime.Interfaces.ModuleDescriptionInterface;
-use RuntimeUI.Interfaces.FrontendInterface;
+use RuntimeUI.Interfaces.ApiDeclaringInterface;
 use RuntimeUI.Interfaces.RoutesDeclaringInterface;
+use RuntimeUI.Interfaces.FrontendInterface;
+use BayrellConsole.Modules.Main.Api;
 use BayrellConsole.Modules.Main.Routes;
 
 
-class ModuleDescription implements ModuleDescriptionInterface, FrontendInterface, RoutesDeclaringInterface
+class ModuleDescription implements 
+	ModuleDescriptionInterface, 
+	ApiDeclaringInterface,
+	RoutesDeclaringInterface,
+	FrontendInterface
 {
 	
 	
@@ -87,10 +93,23 @@ class ModuleDescription implements ModuleDescriptionInterface, FrontendInterface
 	
 	
 	/**
-	 * Returns routes
-	 * @return Vector<string>
+	 * Returns api
+	 * @return Collection<string>
 	 */	
-	public static Vector<string> getRoutes(ContextInterface context){
+	public static Collection<string> getApi(ContextInterface context)
+	{
+		return [
+			classof Api,
+		];
+	}
+	
+	
+	
+	/**
+	 * Returns routes
+	 * @return Collection<string>
+	 */	
+	public static Collection<string> getRoutes(ContextInterface context){
 		return [
 			classof Routes,
 		];

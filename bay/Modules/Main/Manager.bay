@@ -23,8 +23,10 @@ use RuntimeUI.UIController;
 use RuntimeUI.Annotations.BindValue;
 use RuntimeUI.Annotations.BindModel;
 use RuntimeUI.Annotations.Event;
+use RuntimeUI.Annotations.EventAsync;
 use RuntimeUI.Events.MouseEvent.MouseClickEvent;
 use RuntimeUI.Events.UserEvent.ChangeEvent;
+use RuntimeUI.Http.ApiRequest;
 use RuntimeUI.Render.CoreManager;
 use BayrellConsole.Modules.Main.Model;
 
@@ -36,5 +38,24 @@ class Manager extends CoreManager
 	
 	@BindModel{ "model": "navigator" }
 	public assignable UIController navigator = new UIController();
+	
+	
+	
+	@EventAsync{ "event": classof MouseClickEvent, "method_name": "onReload" }
+	public assignable UIController reload_button = new UIController();
+	
+	
+	/**
+	 * Reload navigation
+	 */
+	public async void onReload(MouseClickEvent e)
+	{
+		
+		ApiResult res = await ApiRequest::callApi("BayrellConsole.Modules.Main.Api", "", "loadNavigation", {});
+		
+		this.updateModel({
+			"navigator": res.result
+		});
+	}
 	
 }
