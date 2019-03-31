@@ -48,7 +48,10 @@ class Routes extends CoreRoute
 	public static async WebContainer IndexAction(WebContainer container, ContextInterface context)
 	{
 		
-		ApiResult res = await ApiRequest::callApi("BayrellConsole.Modules.Main.Api", "", "loadNavigation", {}, context);
+		ApiResult res = await ApiRequest::callApi(
+			"BayrellConsoleApi.Navigator", "org.interfaces.Tree",
+			"load", {}, context
+		);
 		TreeModel navigator = res.result;
 		
 		/* Create model */
