@@ -52,12 +52,11 @@ class Routes extends CoreRoute
 			"BayrellConsoleApi.Navigator", "org.interfaces.Tree",
 			"load", {}, context
 		);
-		TreeModel navigator = res.result;
 		
 		/* Create model */
 		Model model = new Model
 		{
-			"navigator": navigator,
+			"navigator": new TreeModel{ "items": res.result },
 		};
 		
 		/* Add response */

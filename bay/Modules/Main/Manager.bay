@@ -32,6 +32,7 @@ use BayrellUI.Tree.TreeItem;
 use BayrellUI.Tree.TreeItemSelectEvent;
 use BayrellUI.Tree.TreeItemDoubleClickEvent;
 use BayrellUI.Tree.TreeModel;
+use BayrellConsole.Models.NavigatorItem;
 use BayrellConsole.Modules.Main.Model;
 
 
@@ -49,12 +50,22 @@ class Manager extends CoreManager
 	/**
 	 * Reload navigation
 	 */
-	public async void onItemDoubleClick(TreeItemDoubleClickEvent e)
+	public async void onItemDoubleClick(TreeItemDoubleClickEvent event)
 	{
 		/* Get path */
-		Collection<string> path1 = rs::explode(".", e.path);
+		Collection<string> path1 = rs::explode(".", event.path);
 		Collection<int> path = path1.map( method rtl::toInt );
-		Collection<TreeItem> items = TreeModel::getTreeItems(this.model.navigator, path);
+		
+		/* Check is folder */
+		TreeModel navigator = this.model.navigator;
+		NavigatorItem item = TreeModel::getTreeItem(navigator, path);
+		if (item.kind != NavigatorItem::KIND_FOLDER) 
+		{
+			return;
+		}
+		
+		/* Get folder path */
+		Collection<TreeItem> items = TreeModel::getTreePath(this.model.navigator, path);
 		string path_str = "/" ~ rs::implode("/", items.map( lambda string (TreeItem item) => item.name ));
 		
 		/* Call api */
@@ -69,8 +80,16 @@ class Manager extends CoreManager
 		
 		if (res.code == 1)
 		{
+			/* Update item */
+			TreeModel navigator = this.model.navigator;
+			NavigatorItem item = TreeModel::getTreeItem(navigator, path);
+			item = item.copy({
+				"items": res.result,
+				"is_open": true,
+			});
+			navigator = TreeModel::setTreeItem(navigator, path, item);
+			
 			/* Update model */
-			TreeModel navigator = TreeModel::updateItems(this.model.navigator, path, res.result.items);
 			this.updateModel({
 				"navigator": navigator
 			});
@@ -98,8 +117,11 @@ class Manager extends CoreManager
 			{}
 		);
 		
+		/* Update navigator */
+		TreeModel navigator = this.model.navigator;
+		navigator <= items <= res.result;
 		this.updateModel({
-			"navigator": res.result
+			"navigator": navigator
 		});
 	}
 	

@@ -16,28 +16,35 @@
  *  limitations under the License.
  */
 
-namespace BayrellConsole.Modules.Main;
+namespace BayrellConsole.Assets;
 
 use Runtime.RuntimeAssets;
 use RuntimeUI.Interfaces.AssetsInterface;
 use RuntimeUI.Render.RenderContainer;
 
 
-class Assets implements AssetsInterface
-{
-
+class FontAwesomeAssets implements AssetsInterface{
+	
+	
 	
 	/**
 	 * Returns required assets
 	 * @return Map<string, string>
 	 */	
-	public static Vector<string> getRequiredAssets(RenderContainer context)
-	{
+	public static Vector<string> getRequiredAssets(ContextInterface context){
 		return [
-			"RuntimeUI.Assets",
-			"BayrellConsole.Assets.FontAwesomeAssets",
-			"BayrellConsole.Models.Assets",
 		];
+	}
+	
+	
+	
+	/**
+	 * Returns required modules
+	 * @return Map<string, string>
+	 */	
+	public static Map<string, string> getRequiredModules(ContextInterface context){
+		return {
+		};
 	}
 	
 	
@@ -45,9 +52,9 @@ class Assets implements AssetsInterface
 	/**
 	 * Returns sync loaded files
 	 */		
-	public static Vector<string> assetsSyncLoad(RenderContainer context)
-	{
+	public static Vector<string> assetsSyncLoad(ContextInterface context){
 		return [
+			"/assets/font-awesome/css/font-awesome.min.css",
 		];
 	}
 	
@@ -56,18 +63,8 @@ class Assets implements AssetsInterface
 	/**
 	 * Returns async loaded files
 	 */			
-	public static Vector<mixed> assetsAsyncLoad(RenderContainer context)
-	{
-		return [
-			[
-				'/assets/BayrellConsole/Modules/Main/Assets.js',
-				'/assets/BayrellConsole/Modules/Main/Manager.js',
-				'/assets/BayrellConsole/Modules/Main/Model.js',
-				'/assets/BayrellConsole/Modules/Main/ModuleDescription.js',
-				'/assets/BayrellConsole/Modules/Main/Routes.js',
-				'/assets/BayrellConsole/Modules/Main/View.js',
-			]
-		];
+	public static Vector<mixed> assetsAsyncLoad(ContextInterface context){
+		return null;
 	}
 	
 	

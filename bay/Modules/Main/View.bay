@@ -19,6 +19,7 @@
 namespace BayrellConsole.Modules.Main;
 
 use RuntimeUI.Render.CoreView;
+use BayrellConsole.Models.NavigatorItem;
 use BayrellConsole.Modules.Main.Assets;
 use BayrellConsole.Modules.Main.Manager;
 use BayrellConsole.Modules.Main.Model;
@@ -82,9 +83,28 @@ struct View extends CoreView
 			%console_workspace{
 				width: calc(100% - 300px);
 			}
+			%console_main %(Tree)tree_icon{
+				color: slateblue;
+			}
 		}
 	;
 	
+	
+	
+	/**
+	 * Returns icon by item
+	 */
+	pure string getIcon(NavigatorItem item)
+	{
+		if (item.kind == NavigatorItem::KIND_FOLDER)
+		{
+			if (item.is_open) return "fa fa-folder-open";
+			return "fa fa-folder";
+		}
+		if (item.kind == NavigatorItem::KIND_FILE) return "fa fa-file";
+		return "";
+	}
+	/* public static callback getIcon = method static::getIcon; */
 	
 	
 	/**
@@ -96,7 +116,8 @@ struct View extends CoreView
 			
 			<div @class='console_left'>
 				<button @control='reload_button'>Reload</button>
-				<Tree @model={ data.navigator } @key='navigator' @control='navigator'></Tree>
+				<Tree @model={ data.navigator } @key='navigator' @control='navigator' 
+					get_icon={ method static::getIcon }></Tree>
 			</div>
 			<div @class='console_workspace'>
 				<Tabs>
