@@ -28,6 +28,10 @@ use RuntimeUI.Events.MouseEvent.MouseClickEvent;
 use RuntimeUI.Events.UserEvent.ChangeEvent;
 use RuntimeUI.Http.ApiRequest;
 use RuntimeUI.Render.CoreManager;
+use BayrellUI.Tree.TreeItem;
+use BayrellUI.Tree.TreeItemSelectEvent;
+use BayrellUI.Tree.TreeItemDoubleClickEvent;
+use BayrellUI.Tree.TreeModel;
 use BayrellConsole.Modules.Main.Model;
 
 
@@ -37,12 +41,48 @@ class Manager extends CoreManager
 	
 	
 	@BindModel{ "model": "navigator" }
+	@EventAsync{ "event": classof TreeItemDoubleClickEvent, "method_name": "onItemDoubleClick" }
 	public assignable UIController navigator = new UIController();
+	
+	
+	
+	/**
+	 * Reload navigation
+	 */
+	public async void onItemDoubleClick(TreeItemDoubleClickEvent e)
+	{
+		/* Get path */
+		Collection<string> path1 = rs::explode(".", e.path);
+		Collection<int> path = path1.map( method rtl::toInt );
+		Collection<TreeItem> items = TreeModel::getTreeItems(this.model.navigator, path);
+		string path_str = "/" ~ rs::implode("/", items.map( lambda string (TreeItem item) => item.name ));
+		
+		/* Call api */
+		ApiResult res = await ApiRequest::callApi(
+			"BayrellConsoleApi.Navigator",
+			"org.interfaces.Tree",
+			"load",
+			{
+				"path": path_str,
+			}
+		);
+		
+		if (res.code == 1)
+		{
+			/* Update model */
+			TreeModel navigator = TreeModel::updateItems(this.model.navigator, path, res.result.items);
+			this.updateModel({
+				"navigator": navigator
+			});
+		}
+	}
+	
 	
 	
 	
 	@EventAsync{ "event": classof MouseClickEvent, "method_name": "onReload" }
 	public assignable UIController reload_button = new UIController();
+	
 	
 	
 	/**
