@@ -19,12 +19,13 @@
 namespace BayrellConsole.Modules.Main;
 
 use Runtime.CoreStruct;
+use BayrellUI.ContextMenu.ContextMenuModel;
 use BayrellUI.Tree.TreeModel;
-
 
 struct Model extends CoreStruct
 {
 	
 	public TreeModel navigator = null;
+	public ContextMenuModel navigator_menu = new ContextMenuModel();
 	
 }

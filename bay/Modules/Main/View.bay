@@ -25,6 +25,8 @@ use BayrellConsole.Modules.Main.Manager;
 use BayrellConsole.Modules.Main.Model;
 use BayrellUI.Tabs.Tabs;
 use BayrellUI.Tree.Tree;
+use BayrellUI.ContextMenu.ContextMenu;
+use BayrellUI.ContextMenu.ContextMenuItem;
 
 
 struct View extends CoreView
@@ -63,6 +65,7 @@ struct View extends CoreView
 		[
 			classof Tabs,
 			classof Tree,
+			classof ContextMenu,
 		]
 	;
 	
@@ -73,6 +76,9 @@ struct View extends CoreView
 	 */
 	lambda string css(Dict<string> vars) => 
 		@css{
+			%console_main{
+				padding: 10px;
+			}
 			%console_left, %console_workspace{
 				display: inline-block;
 				vertical-align: top;
@@ -112,7 +118,7 @@ struct View extends CoreView
 	 */
 	lambda Collection<UIStruct> render(Model data, Collection<UIStruct> children) =>
 		
-		<div @key='main' @class='console_main'>
+		<div @key='main' @class='console_main' @control='console_main'>
 			
 			<div @class='console_left'>
 				<button @control='reload_button'>Reload</button>
@@ -126,8 +132,23 @@ struct View extends CoreView
 			</div>
 			
 		</div>
-		
+		<ContextMenu @model={ data.navigator_menu } @key="navigator_menu" @control="navigator_menu">
+			{ static::renderContextMenuItems(data) }
+		</ContextMenu>
 	;
+	
+	
+	
+	/**
+	 * Render context menu items
+	 */
+	pure Collection<UIStruct> renderContextMenuItems(Model data)
+	{
+		return 
+			<ContextMenuItem icon='fa fa-cogs' tag='create_component'>Создать компонент</ContextMenuItem>
+			<ContextMenuItem icon='fa fa-trash' tag='delete_component'>Удалить</ContextMenuItem>
+		;
+	}
 	
 	
 	

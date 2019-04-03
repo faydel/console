@@ -28,8 +28,10 @@ use RuntimeUI.Events.MouseEvent.MouseClickEvent;
 use RuntimeUI.Events.UserEvent.ChangeEvent;
 use RuntimeUI.Http.ApiRequest;
 use RuntimeUI.Render.CoreManager;
+use BayrellUI.ContextMenu.ContextMenuItemClickEvent;
 use BayrellUI.Tree.TreeItem;
 use BayrellUI.Tree.TreeItemSelectEvent;
+use BayrellUI.Tree.TreeItemContextMenuEvent;
 use BayrellUI.Tree.TreeItemDoubleClickEvent;
 use BayrellUI.Tree.TreeModel;
 use BayrellConsole.Models.NavigatorItem;
@@ -41,7 +43,35 @@ class Manager extends CoreManager
 	public Model model;
 	
 	
+	
+	
+	/* Controller console_main */
+	
+	@Event{ "event": classof MouseClickEvent, "method_name": "onConsoleMainClick" }
+	public assignable UIController console_main = new UIController();
+	
+	
+	/**
+	 * Reload navigation
+	 */
+	public void onConsoleMainClick(MouseClickEvent event)
+	{
+		ContextMenuModel navigator_menu = this.model.navigator_menu;
+		navigator_menu <= is_active <= false;
+		this.updateModel({
+			"navigator_menu": navigator_menu,
+		});
+	}
+	
+	
+	
+	
+	
+	/* Controller navigator */
+	
+	
 	@BindModel{ "model": "navigator" }
+	@Event{ "event": classof TreeItemContextMenuEvent, "method_name": "onItemContextMenu" }
 	@EventAsync{ "event": classof TreeItemDoubleClickEvent, "method_name": "onItemDoubleClick" }
 	public assignable UIController navigator = new UIController();
 	
@@ -52,6 +82,7 @@ class Manager extends CoreManager
 	 */
 	public async void onItemDoubleClick(TreeItemDoubleClickEvent event)
 	{
+		
 		/* Get path */
 		Collection<string> path1 = rs::explode(".", event.path);
 		Collection<int> path = path1.map( method rtl::toInt );
@@ -98,6 +129,62 @@ class Manager extends CoreManager
 	
 	
 	
+	/**
+	 * Reload navigation
+	 */
+	public void onItemContextMenu(TreeItemContextMenuEvent e)
+	{
+		e.event.cancel();
+		
+		ContextMenuModel navigator_menu = this.model.navigator_menu;
+		navigator_menu = navigator_menu.copy({
+			"is_active": true,
+			"x": e.event.clientX,
+			"y": e.event.clientY,
+		});
+		
+		
+		TreeModel navigator = this.model.navigator;
+		navigator <= selected <= e.path;
+		this.updateModel({
+			"navigator": navigator,
+			"navigator_menu": navigator_menu,
+		});
+		
+	}
+	
+	
+	
+	
+	
+	/* Controller navigator_menu */
+	
+	
+	@Event{ "event": classof ContextMenuItemClickEvent, "method_name": "onNavigatorMenuClick" }
+	public assignable UIController navigator_menu = new UIController();
+	
+	
+	
+	/**
+	 * Navigation manu item click
+	 */
+	public void onNavigatorMenuClick(ContextMenuItemClickEvent e)
+	{
+		e.event.cancel();
+		
+		console.log(e.tag);
+		
+		ContextMenuModel navigator_menu = this.model.navigator_menu;
+		navigator_menu <= is_active <= false;
+		this.updateModel({
+			"navigator_menu": navigator_menu,
+		});
+	}
+	
+	
+	
+	
+	/* Controller reload_button */
 	
 	@EventAsync{ "event": classof MouseClickEvent, "method_name": "onReload" }
 	public assignable UIController reload_button = new UIController();
