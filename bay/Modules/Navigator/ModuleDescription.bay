@@ -16,14 +16,14 @@
  *  limitations under the License.
  */
 
-namespace BayrellConsole.Modules.Main;
+namespace BayrellConsole.Modules.Navigator;
 
 use Runtime.Interfaces.ContextInterface;
 use Runtime.Interfaces.ModuleDescriptionInterface;
 use Core.UI.Interfaces.RoutesDeclaringInterface;
 use Core.UI.Interfaces.FrontendInterface;
-use BayrellConsole.Modules.Main.Api;
-use BayrellConsole.Modules.Main.Routes;
+use BayrellConsole.Modules.Navigator.Api;
+use BayrellConsole.Modules.Navigator.Routes;
 
 
 class ModuleDescription implements ModuleDescriptionInterface, RoutesDeclaringInterface, FrontendInterface
@@ -36,7 +36,7 @@ class ModuleDescription implements ModuleDescriptionInterface, RoutesDeclaringIn
 	 */
 	public static string getName()
 	{
-		return "BayrellConsole.Modules.Main";
+		return "BayrellConsole.Modules.Navigator";
 	}
 	
 	

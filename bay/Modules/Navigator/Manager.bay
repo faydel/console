@@ -16,7 +16,7 @@
  *  limitations under the License.
  */
 
-namespace BayrellConsole.Modules.Main;
+namespace BayrellConsole.Modules.Navigator;
 
 use Core.Components.ContextMenu.ContextMenuItemClickEvent;
 use Core.Components.Tree.TreeItem;
@@ -35,8 +35,8 @@ use Core.UI.Events.MouseEvent.MouseClickEvent;
 use Core.UI.Events.MouseEvent.MouseContextMenuEvent;
 use Core.UI.Events.UserEvent.ChangeEvent;
 use Core.UI.Render.CoreManager;
-use BayrellConsole.Models.NavigatorItem;
-use BayrellConsole.Modules.Main.Model;
+use BayrellConsole.Modules.Navigator.Model;
+use BayrellConsole.Modules.Navigator.NavigatorItem;
 
 
 class Manager extends CoreManager
@@ -125,7 +125,7 @@ class Manager extends CoreManager
 			TreeModel navigator = this.model.navigator;
 			NavigatorItem item = TreeModel::getTreeItem(navigator, path);
 			item = item.copy({
-				"items": Model::convertFileNodes(res.result),
+				"items": NavigatorItem::convertFileNodes(res.result),
 				"is_open": true,
 			});
 			navigator = TreeModel::setTreeItem(navigator, path, item);
@@ -216,7 +216,7 @@ class Manager extends CoreManager
 		
 		/* Update navigator */
 		TreeModel navigator = this.model.navigator;
-		navigator <= items <= res.result;
+		navigator <= items <= NavigatorItem::convertFileNodes(res.result);
 		this.updateModel({
 			"navigator": navigator
 		});

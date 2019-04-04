@@ -76,7 +76,8 @@ class ModuleDescription implements ModuleDescriptionInterface
 	 */	
 	public static Map<string, string> getRequiredModules(ContextInterface context){
 		return {
-			'BayrellConsole.Modules.Main': '*',
+			'BayrellConsole.Api': '*',
+			'BayrellConsole.Modules.Navigator': '*',
 		};
 	}
 	

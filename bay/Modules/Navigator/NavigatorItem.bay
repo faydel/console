@@ -16,7 +16,7 @@
  *  limitations under the License.
  */
  
-namespace BayrellConsole.Models;
+namespace BayrellConsole.Modules.Navigator;
 
 use Runtime.CoreStruct;
 use Core.Components.Tree.TreeItem;
@@ -31,7 +31,7 @@ struct NavigatorItem extends TreeItem
 	public bool is_open = false;
 	public bool have_error = false;
 	public bool have_warning = false;
-	public string kind = "";
+	/*public string kind = "";*/
 	
 	
 	/**
@@ -42,6 +42,29 @@ struct NavigatorItem extends TreeItem
 		if (kind == "folder") return "folder";
 		else if (kind == "file") return "file";
 		return "";
+	}
+	
+	
+	
+	/**
+	 * Convert file nodes
+	 * @param TreeModel model
+	 * @param Collection<FileNode> items
+	 * @return TreeModel
+	 */
+	pure Collection<NavigatorItem> convertFileNodes(Collection<FileNode> items)
+	{
+		return items.map( 
+			NavigatorItem (FileNode item)
+			{
+				return new NavigatorItem
+				{
+					"name": item.name,
+					"kind": item.kind,
+					"is_open": false,
+				};
+			} 
+		);
 	}
 	
 }

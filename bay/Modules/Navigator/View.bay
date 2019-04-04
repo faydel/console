@@ -16,13 +16,13 @@
  *  limitations under the License.
  */
 
-namespace BayrellConsole.Modules.Main;
+namespace BayrellConsole.Modules.Navigator;
 
 use Core.UI.Render.CoreView;
-use BayrellConsole.Models.NavigatorItem;
-use BayrellConsole.Modules.Main.Assets;
-use BayrellConsole.Modules.Main.Manager;
-use BayrellConsole.Modules.Main.Model;
+use BayrellConsole.Modules.Navigator.Assets;
+use BayrellConsole.Modules.Navigator.Manager;
+use BayrellConsole.Modules.Navigator.Model;
+use BayrellConsole.Modules.Navigator.NavigatorItem;
 use Core.Components.Tabs.Tabs;
 use Core.Components.Tree.Tree;
 use Core.Components.ContextMenu.ContextMenu;

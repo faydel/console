@@ -16,7 +16,7 @@
  *  limitations under the License.
  */
 
-namespace BayrellConsole.Modules.Main;
+namespace BayrellConsole.Modules.Navigator;
 
 use Runtime.Interfaces.ContextInterface;
 use Core.UI.Annotations.RouteInfo;
@@ -29,8 +29,9 @@ use Core.UI.Render.RenderContainer;
 use Core.UI.Render.WebContainer;
 use Core.Components.Tree.TreeModel;
 use Core.Components.Tree.TreeItem;
-use BayrellConsole.Modules.Main.Model;
-use BayrellConsole.Modules.Main.View;
+use BayrellConsole.Modules.Navigator.Model;
+use BayrellConsole.Modules.Navigator.NavigatorItem;
+use BayrellConsole.Modules.Navigator.View;
 
 
 class Routes extends CoreRoute
@@ -56,7 +57,7 @@ class Routes extends CoreRoute
 		/* Create model */
 		Model model = new Model
 		{
-			"navigator": new TreeModel{ "items": Model::convertFileNodes(res.result) },
+			"navigator": new TreeModel{ "items": NavigatorItem::convertFileNodes(res.result) },
 		};
 		
 		/* Add response */

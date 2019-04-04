@@ -16,13 +16,14 @@
  *  limitations under the License.
  */
  
-namespace BayrellConsole.Modules.Main;
+namespace BayrellConsole.Modules.Navigator;
 
 use Runtime.CoreStruct;
 use Core.Components.ContextMenu.ContextMenuModel;
 use Core.Components.Tree.TreeItem;
 use Core.Components.Tree.TreeModel;
 use Core.FileSystem.FileNode;
+use BayrellConsole.Modules.Navigator.NavigatorItem;
 
 
 struct Model extends CoreStruct
@@ -30,27 +31,5 @@ struct Model extends CoreStruct
 	
 	public TreeModel navigator = null;
 	public ContextMenuModel navigator_menu = new ContextMenuModel();
-	
-	
-	/**
-	 * Convert file nodes
-	 * @param TreeModel model
-	 * @param Collection<FileNode> items
-	 * @return TreeModel
-	 */
-	pure Collection<TreeItem> convertFileNodes(Collection<FileNode> items)
-	{
-		return items.map( 
-			TreeItem (FileNode item)
-			{
-				return new TreeItem
-				{
-					"name": item.name,
-					"kind": item.kind,
-				};
-			} 
-		);
-	}
-	
 	
 }

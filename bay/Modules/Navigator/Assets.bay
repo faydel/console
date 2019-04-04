@@ -16,7 +16,7 @@
  *  limitations under the License.
  */
 
-namespace BayrellConsole.Modules.Main;
+namespace BayrellConsole.Modules.Navigator;
 
 use Runtime.RuntimeAssets;
 use Core.UI.Interfaces.AssetsInterface;
@@ -34,10 +34,12 @@ class Assets implements AssetsInterface
 	public static Vector<string> getRequiredAssets(RenderContainer context)
 	{
 		return [
+			"Core.Components.ContextMenu.ContextMenuAssets",
+			"Core.Components.Tabs.TabsAssets",
+			"Core.Components.Tree.TreeAssets",
 			"Core.FileSystem.Assets",
 			"Core.UI.Assets",
 			"BayrellConsole.Assets.FontAwesomeAssets",
-			"BayrellConsole.Models.Assets",
 		];
 	}
 	
@@ -61,12 +63,13 @@ class Assets implements AssetsInterface
 	{
 		return [
 			[
-				'/assets/BayrellConsole/Modules/Main/Assets.js',
-				'/assets/BayrellConsole/Modules/Main/Manager.js',
-				'/assets/BayrellConsole/Modules/Main/Model.js',
-				'/assets/BayrellConsole/Modules/Main/ModuleDescription.js',
-				'/assets/BayrellConsole/Modules/Main/Routes.js',
-				'/assets/BayrellConsole/Modules/Main/View.js',
+				'/assets/BayrellConsole/Modules/Navigator/Assets.js',
+				'/assets/BayrellConsole/Modules/Navigator/Manager.js',
+				'/assets/BayrellConsole/Modules/Navigator/Model.js',
+				'/assets/BayrellConsole/Modules/Navigator/ModuleDescription.js',
+				'/assets/BayrellConsole/Modules/Navigator/NavigatorItem.js',
+				'/assets/BayrellConsole/Modules/Navigator/Routes.js',
+				'/assets/BayrellConsole/Modules/Navigator/View.js',
 			]
 		];
 	}
