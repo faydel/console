@@ -16,13 +16,15 @@
  *  limitations under the License.
  */
 
-namespace BayrellConsole;
+namespace BayrellConsole.Api;
 
 use Runtime.Interfaces.ContextInterface;
 use Runtime.Interfaces.ModuleDescriptionInterface;
+use Core.UI.Interfaces.ApiDeclaringInterface;
+use BayrellConsole.Api.Navigator;
 
 
-class ModuleDescription implements ModuleDescriptionInterface
+class ModuleDescription implements ModuleDescriptionInterface, ApiDeclaringInterface
 {
 	
 	
@@ -31,7 +33,7 @@ class ModuleDescription implements ModuleDescriptionInterface
 	 * @return string
 	 */
 	public static string getName(){
-		return "BayrellConsole";
+		return "BayrellConsole.Api";
 	}
 	
 	
@@ -76,9 +78,19 @@ class ModuleDescription implements ModuleDescriptionInterface
 	 */	
 	public static Map<string, string> getRequiredModules(ContextInterface context){
 		return {
-			'BayrellConsole.Modules.Main': '*',
 		};
 	}
 	
 	
+	
+	/**
+	 * Returns api
+	 * @return Collection<string>
+	 */	
+	public static Collection<string> getApi(ContextInterface context)
+	{
+		return [
+			classof Navigator,
+		];
+	}
 }

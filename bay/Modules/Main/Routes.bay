@@ -1,13 +1,13 @@
 /*!
  *  Bayrell Development Console
  *
- *  (c) Copyright 2018 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2019 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
- *      https://www.bayrell.org/licenses/APACHE-LICENSE-2.0.html
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,16 +19,16 @@
 namespace BayrellConsole.Modules.Main;
 
 use Runtime.Interfaces.ContextInterface;
-use RuntimeUI.Annotations.RouteInfo;
-use RuntimeUI.Http.ApiRequest;
-use RuntimeUI.Http.ApiResult;
-use RuntimeUI.Http.Response;
-use RuntimeUI.Render.CoreRoute;
-use RuntimeUI.Render.CoreLayout;
-use RuntimeUI.Render.RenderContainer;
-use RuntimeUI.Render.WebContainer;
-use BayrellUI.Tree.TreeModel;
-use BayrellUI.Tree.TreeItem;
+use Core.UI.Annotations.RouteInfo;
+use Core.Http.ApiRequest;
+use Core.Http.ApiResult;
+use Core.Http.Response;
+use Core.UI.Render.CoreRoute;
+use Core.UI.Render.CoreLayout;
+use Core.UI.Render.RenderContainer;
+use Core.UI.Render.WebContainer;
+use Core.Components.Tree.TreeModel;
+use Core.Components.Tree.TreeItem;
 use BayrellConsole.Modules.Main.Model;
 use BayrellConsole.Modules.Main.View;
 
@@ -49,14 +49,14 @@ class Routes extends CoreRoute
 	{
 		
 		ApiResult res = await ApiRequest::callApi(
-			"BayrellConsoleApi.Navigator", "org.interfaces.Tree",
-			"load", {}, context
+			"BayrellConsole.Api.Navigator", "Core.FileSystem.FileTransferInterface", "getDirectoryListing",
+			{}, context
 		);
 		
 		/* Create model */
 		Model model = new Model
 		{
-			"navigator": new TreeModel{ "items": res.result },
+			"navigator": new TreeModel{ "items": Model::convertFileNodes(res.result) },
 		};
 		
 		/* Add response */

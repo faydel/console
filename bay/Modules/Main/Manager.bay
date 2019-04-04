@@ -1,13 +1,13 @@
 /*!
  *  Bayrell Development Console
  *
- *  (c) Copyright 2018 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2019 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
- *      https://www.bayrell.org/licenses/APACHE-LICENSE-2.0.html
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,22 +18,23 @@
 
 namespace BayrellConsole.Modules.Main;
 
-
-use RuntimeUI.UIController;
-use RuntimeUI.Annotations.BindValue;
-use RuntimeUI.Annotations.BindModel;
-use RuntimeUI.Annotations.Event;
-use RuntimeUI.Annotations.EventAsync;
-use RuntimeUI.Events.MouseEvent.MouseClickEvent;
-use RuntimeUI.Events.UserEvent.ChangeEvent;
-use RuntimeUI.Http.ApiRequest;
-use RuntimeUI.Render.CoreManager;
-use BayrellUI.ContextMenu.ContextMenuItemClickEvent;
-use BayrellUI.Tree.TreeItem;
-use BayrellUI.Tree.TreeItemSelectEvent;
-use BayrellUI.Tree.TreeItemContextMenuEvent;
-use BayrellUI.Tree.TreeItemDoubleClickEvent;
-use BayrellUI.Tree.TreeModel;
+use Core.Components.ContextMenu.ContextMenuItemClickEvent;
+use Core.Components.Tree.TreeItem;
+use Core.Components.Tree.TreeItemSelectEvent;
+use Core.Components.Tree.TreeItemContextMenuEvent;
+use Core.Components.Tree.TreeItemDoubleClickEvent;
+use Core.Components.Tree.TreeModel;
+use Core.FileSystem.FileNode;
+use Core.Http.ApiRequest;
+use Core.UI.UIController;
+use Core.UI.Annotations.BindValue;
+use Core.UI.Annotations.BindModel;
+use Core.UI.Annotations.Event;
+use Core.UI.Annotations.EventAsync;
+use Core.UI.Events.MouseEvent.MouseClickEvent;
+use Core.UI.Events.MouseEvent.MouseContextMenuEvent;
+use Core.UI.Events.UserEvent.ChangeEvent;
+use Core.UI.Render.CoreManager;
 use BayrellConsole.Models.NavigatorItem;
 use BayrellConsole.Modules.Main.Model;
 
@@ -48,11 +49,12 @@ class Manager extends CoreManager
 	/* Controller console_main */
 	
 	@Event{ "event": classof MouseClickEvent, "method_name": "onConsoleMainClick" }
+	@Event{ "event": classof MouseContextMenuEvent, "method_name": "onConsoleMainContextMenu" }
 	public assignable UIController console_main = new UIController();
 	
 	
 	/**
-	 * Reload navigation
+	 * Main click
 	 */
 	public void onConsoleMainClick(MouseClickEvent event)
 	{
@@ -64,6 +66,14 @@ class Manager extends CoreManager
 	}
 	
 	
+	
+	/**
+	 * Main context menu
+	 */
+	public void onConsoleMainContextMenu(MouseContextMenuEvent event)
+	{
+		event.cancel();
+	}
 	
 	
 	
@@ -101,9 +111,9 @@ class Manager extends CoreManager
 		
 		/* Call api */
 		ApiResult res = await ApiRequest::callApi(
-			"BayrellConsoleApi.Navigator",
-			"org.interfaces.Tree",
-			"load",
+			"BayrellConsole.Api.Navigator",
+			"Core.FileSystem.FileTransferInterface",
+			"getDirectoryListing",
 			{
 				"path": path_str,
 			}
@@ -115,7 +125,7 @@ class Manager extends CoreManager
 			TreeModel navigator = this.model.navigator;
 			NavigatorItem item = TreeModel::getTreeItem(navigator, path);
 			item = item.copy({
-				"items": res.result,
+				"items": Model::convertFileNodes(res.result),
 				"is_open": true,
 			});
 			navigator = TreeModel::setTreeItem(navigator, path, item);
@@ -198,9 +208,9 @@ class Manager extends CoreManager
 	{
 		
 		ApiResult res = await ApiRequest::callApi(
-			"BayrellConsoleApi.Navigator",
-			"org.interfaces.Tree",
-			"load",
+			"BayrellConsole.Api.Navigator",
+			"Core.FileSystem.FileTransferInterface",
+			"getDirectoryListing",
 			{}
 		);
 		

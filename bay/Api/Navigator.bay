@@ -1,0 +1,75 @@
+/*!
+ *  Bayrell Development Console
+ *
+ *  (c) Copyright 2019 "Ildar Bikmamatov" <support@bayrell.org>
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+namespace BayrellConsole.Api;
+
+use Runtime.CoreStruct;
+use Runtime.RuntimeConstant;
+use Core.Backend.BackendProvider;
+use Core.FileSystem.FileNode;
+use Core.FileSystem.FileSystemInterface;
+use Core.Http.ApiRequest;
+use Core.Http.ApiResult;
+use Core.UI.Annotations.ApiMethod;
+use BayrellConsole.Models.NavigatorItem;
+
+
+class Navigator extends CoreStruct
+{
+	
+	
+	/**
+	 * Returns directory listing
+	 */
+	@ApiMethod
+	{ 
+		"space": "Core.FileSystem.FileTransferInterface",
+		"name": "getDirectoryListing"
+	} 
+	public static async ApiResult loadTree(ContextInterface context, ApiRequest req)
+	{
+		string path = req.data.get("path", "", "string");
+		BackendProvider app = context.getValue("default.app");
+		FileSystemInterface fs = context.get("provider.default.fs");
+		Collection<string> arr = await fs.getDirectoryListing(app.base_path ~ "/lib" ~ path);
+		Collection<FileNode> items = [];
+		
+		for (int i=0; i<arr.count(); i++)
+		{
+			string kind = FileNode::KIND_FILE;
+			string name = arr.item(i);
+			bool is_folder = await fs.isDir(app.base_path ~ "/lib" ~ path ~ "/" ~ name);
+			if (is_folder) kind = FileNode::KIND_FOLDER;
+			
+			items.push(
+				new FileNode{
+					"name": name,
+					"kind": kind,
+					"items": null
+				}
+			);
+		}
+		
+		/* Send result */
+		ApiResult res = new ApiResult();
+		res <= result <= items;
+		return ApiResult::setError(res, RuntimeConstant::ERROR_OK, "Ok");
+	}
+	
+	
+}
