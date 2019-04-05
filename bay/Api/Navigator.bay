@@ -34,7 +34,9 @@ class Navigator extends CoreStruct
 	
 	
 	/**
-	 * Returns directory listing
+	 * Returns files and folders from directory
+	 * @param string path
+	 * @return Collection<FileNode>
 	 */
 	@ApiMethod
 	{ 
@@ -71,5 +73,145 @@ class Navigator extends CoreStruct
 		return ApiResult::setError(res, RuntimeConstant::ERROR_OK, "Ok");
 	}
 	
+	
+	
+	
+	
+	/**
+	 * Returns files stat
+	 * @param Collection<string> items
+	 * @return Collection<FileStat>
+	 */
+	@ApiMethod
+	{ 
+		"space": "Core.FileSystem.FileTransferInterface",
+		"name": "stat"
+	} 
+	public static async ApiResult stat(ContextInterface context, ApiRequest req)
+	{
+	
+		/* Send result */
+		return ApiResult::setError(new ApiResult{ "result": result }, RuntimeConstant::ERROR_OK, "Ok");
+	}
+	
+	
+	
+	/**
+	 * Create new node
+	 * @param string path
+	 * @param string name
+	 * @param string kind
+	 * @return bool
+	 */
+	@ApiMethod
+	{ 
+		"space": "Core.FileSystem.FileTransferInterface",
+		"name": "createNode"
+	} 
+	public static async ApiResult createNode(ContextInterface context, ApiRequest req)
+	{
+		/* Send result */
+		return ApiResult::setError(new ApiResult{ "result": result }, RuntimeConstant::ERROR_OK, "Ok");
+	}
+	
+	
+	
+	/**
+	 * Clear file
+	 * @param string path
+	 * @return bool
+	 */
+	@ApiMethod
+	{ 
+		"space": "Core.FileSystem.FileTransferInterface",
+		"name": "clearFile"
+	} 
+	public static async ApiResult clearFile(ContextInterface context, ApiRequest req)
+	{
+		/* Send result */
+		return ApiResult::setError(new ApiResult{ "result": result }, RuntimeConstant::ERROR_OK, "Ok");
+	}
+	
+	
+	
+	/**
+	 * Read file
+	 * @param string path
+	 * @param int offset
+	 * @param int count
+	 * @param string charset
+	 * @return FileIOResult
+	 */
+	@ApiMethod
+	{ 
+		"space": "Core.FileSystem.FileTransferInterface",
+		"name": "readString"
+	} 
+	public static async ApiResult readString(ContextInterface context, ApiRequest req)
+	{
+		/* Send result */
+		return ApiResult::setError(new ApiResult{ "result": result }, RuntimeConstant::ERROR_OK, "Ok");
+	}
+	
+	
+	
+	/**
+	 * Write file
+	 * @param string path
+	 * @param string content
+	 * @param int offset
+	 * @param string charset
+	 * @return FileIOResult
+	 */
+	@ApiMethod
+	{ 
+		"space": "Core.FileSystem.FileTransferInterface",
+		"name": "writeString"
+	} 
+	public static async ApiResult writeString(ContextInterface context, ApiRequest req)
+	{
+		/* Send result */
+		return ApiResult::setError(new ApiResult{ "result": result }, RuntimeConstant::ERROR_OK, "Ok");
+	}
+	
+	
+	
+	/**
+	 * Read file
+	 * @param string path
+	 * @param int offset
+	 * @param int count
+	 * @return FileIOResult
+	 */
+	@ApiMethod
+	{ 
+		"space": "Core.FileSystem.FileTransferInterface",
+		"name": "readBlock"
+	} 
+	public static async ApiResult readBlock(ContextInterface context, ApiRequest req)
+	{
+		/* Send result */
+		return ApiResult::setError(new ApiResult{ "result": result }, RuntimeConstant::ERROR_OK, "Ok");
+	}
+	
+	
+	
+	/**
+	 * Write file
+	 * @param string path
+	 * @param Collection<byte> content
+	 * @param int offset
+	 * @return FileIOResult
+	 */
+	@ApiMethod
+	{ 
+		"space": "Core.FileSystem.FileTransferInterface",
+		"name": "writeBlock"
+	} 
+	public static async ApiResult writeBlock(ContextInterface context, ApiRequest req)
+	{
+		/* Send result */
+		return ApiResult::setError(new ApiResult{ "result": result }, RuntimeConstant::ERROR_OK, "Ok");
+	}
 	
 }

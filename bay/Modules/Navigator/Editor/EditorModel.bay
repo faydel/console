@@ -16,22 +16,14 @@
  *  limitations under the License.
  */
  
-namespace BayrellConsole.Modules.Navigator;
+namespace BayrellConsole.Modules.Navigator.Editor;
 
 use Runtime.CoreStruct;
-use Core.Components.ContextMenu.ContextMenuModel;
-use Core.Components.Tree.TreeItem;
-use Core.Components.Tree.TreeModel;
-use Core.FileSystem.FileNode;
-use BayrellConsole.Modules.Navigator.Editor.EditorModel;
-use BayrellConsole.Modules.Navigator.NavigatorItem;
 
 
-struct Model extends CoreStruct
+struct EditorModel extends CoreStruct
 {
 	
-	public TreeModel navigator = null;
-	public EditorModel editor = null;
-	public ContextMenuModel navigator_menu = new ContextMenuModel();
+	public string content = "";
 	
 }

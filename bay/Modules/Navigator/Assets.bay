@@ -39,6 +39,7 @@ class Assets implements AssetsInterface
 			"Core.Components.Tree.TreeAssets",
 			"Core.FileSystem.Assets",
 			"Core.UI.Assets",
+			"BayrellConsole.Assets.CodeMirrorAssets",
 			"BayrellConsole.Assets.FontAwesomeAssets",
 		];
 	}
@@ -63,6 +64,9 @@ class Assets implements AssetsInterface
 	{
 		return [
 			[
+				'/assets/BayrellConsole/Modules/Navigator/Editor/Editor.js',
+				'/assets/BayrellConsole/Modules/Navigator/Editor/EditorManager.js',
+				'/assets/BayrellConsole/Modules/Navigator/Editor/EditorModel.js',
 				'/assets/BayrellConsole/Modules/Navigator/Assets.js',
 				'/assets/BayrellConsole/Modules/Navigator/Manager.js',
 				'/assets/BayrellConsole/Modules/Navigator/Model.js',

@@ -1,0 +1,88 @@
+/*!
+ *  Bayrell Development Console
+ *
+ *  (c) Copyright 2019 "Ildar Bikmamatov" <support@bayrell.org>
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+namespace BayrellConsole.Modules.Navigator.Editor;
+
+use Core.Components.ContextMenu.ContextMenuItemClickEvent;
+use Core.UI.UIController;
+use Core.UI.Annotations.BindValue;
+use Core.UI.Annotations.BindModel;
+use Core.UI.Annotations.Event;
+use Core.UI.Annotations.EventAsync;
+use Core.UI.Events.MountEvent;
+use Core.UI.Render.CoreManager;
+use BayrellConsole.Modules.Navigator.Editor.EditorModel;
+
+
+class EditorManager extends CoreManager
+{
+	public EditorModel model;
+	
+	
+	
+	/* Controller console_main */
+	
+	@EventAsync{ "event": classof MountEvent, "method_name": "onMountEditor" }
+	public assignable UIController textarea_editor = new UIController();
+	
+	
+	
+	/**
+	 * Main click
+	 */
+	public async void onMountEditor(MountEvent event)
+	{
+		
+		#switch
+		#case ifcode ES6 then
+		
+		this.textarea_editor.ref.editor = CodeMirror.fromTextArea(
+			this.textarea_editor.ref, 
+			{
+				autoRefresh: true,
+				lineNumbers: true,
+				lineWrapping: true,
+				matchBrackets: true,
+				/*mode: "text/x-scss",*/
+			}
+		);
+		this.textarea_editor.ref.editor.on("change", () => {
+			if (this.timer_change){
+				clearTimeout(this.timer_change);
+				this.timer_change = null;
+			}
+			this.timer_change = setTimeout(() => {
+				
+			}, 250);
+		});
+		#endswitch
+		
+	}
+	
+	
+	
+	/**
+	 * Update DOM by manager. Return true if manager should update, or false if update should by driver
+	 * @return bool
+	 */
+	public bool updateDOM(mixed elem, UIStruct ui)
+	{
+		return true;
+	}
+	
+}

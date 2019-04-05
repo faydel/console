@@ -1,0 +1,92 @@
+/*!
+ *  Bayrell Development Console
+ *
+ *  (c) Copyright 2019 "Ildar Bikmamatov" <support@bayrell.org>
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+namespace BayrellConsole.Assets;
+
+use Runtime.RuntimeAssets;
+use Core.UI.Interfaces.AssetsInterface;
+use Core.UI.Render.RenderContainer;
+
+
+class CodeMirrorAssets implements AssetsInterface
+{
+	
+	
+	
+	/**
+	 * Returns required assets
+	 * @return Map<string, string>
+	 */
+	public static Vector<string> getRequiredAssets(ContextInterface context)
+	{
+		return [
+		];
+	}
+	
+	
+	
+	/**
+	 * Returns required modules
+	 * @return Map<string, string>
+	 */
+	public static Map<string, string> getRequiredModules(ContextInterface context)
+	{
+		return {
+		};
+	}
+	
+	
+	
+	/**
+	 * Returns sync loaded files
+	 */
+	public static Vector<string> assetsSyncLoad(ContextInterface context)
+	{
+		return [
+			"/assets/codemirror/lib/codemirror.css",
+		];
+	}
+	
+	
+	
+	/**
+	 * Returns async loaded files
+	 */
+	public static Vector<mixed> assetsAsyncLoad(ContextInterface context)
+	{
+		return [
+			[
+				"/assets/codemirror/lib/codemirror.js",
+			],
+			[
+				"/assets/codemirror/addon/display/autorefresh.js",
+				"/assets/codemirror/mode/css/css.js",
+				"/assets/codemirror/mode/xml/xml.js",
+				"/assets/codemirror/mode/javascript/javascript.js",
+				"/assets/codemirror/mode/htmlmixed/htmlmixed.js",
+			]
+		];
+	}
+	
+	
+	
+	/**
+	 * Init render container
+	 */
+	public static RenderContainer initContainer(RenderContainer container){ return container; }
+}

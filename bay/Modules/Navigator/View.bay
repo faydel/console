@@ -23,6 +23,7 @@ use BayrellConsole.Modules.Navigator.Assets;
 use BayrellConsole.Modules.Navigator.Manager;
 use BayrellConsole.Modules.Navigator.Model;
 use BayrellConsole.Modules.Navigator.NavigatorItem;
+use BayrellConsole.Modules.Navigator.Editor.Editor;
 use Core.Components.Tabs.Tabs;
 use Core.Components.Tree.Tree;
 use Core.Components.ContextMenu.ContextMenu;
@@ -66,6 +67,7 @@ struct View extends CoreView
 			classof Tabs,
 			classof Tree,
 			classof ContextMenu,
+			classof Editor,
 		]
 	;
 	
@@ -77,18 +79,27 @@ struct View extends CoreView
 	lambda string css(Dict<string> vars) => 
 		@css{
 			%console_main{
-				padding: 10px;
-				min-height: 100vh;
+				padding: 0px;
+				height: 100vh;
+				display: table;
+				width: 100%;
 			}
 			%console_left, %console_workspace{
-				display: inline-block;
+				display: table-cell;
 				vertical-align: top;
 			}
 			%console_left{
+				position: relative;
 				width: 300px;
+				height: 100%;
+			}
+			%console_left %(Tree)tree{
+				overflow: auto;
+				height: calc(100% - 21px);
 			}
 			%console_workspace{
-				width: calc(100% - 300px);
+				position: relative;
+				height: 100%;
 			}
 			%console_main %(Tree)tree_icon{
 				color: slateblue;
@@ -127,9 +138,7 @@ struct View extends CoreView
 					get_icon={ method static::getIcon }></Tree>
 			</div>
 			<div @class='console_workspace'>
-				<Tabs>
-					{ static::renderWorkspaceTabs(data) }
-				</Tabs>
+				<Editor @model={ data.editor }></Editor>
 			</div>
 			
 		</div>
@@ -149,17 +158,6 @@ struct View extends CoreView
 			<ContextMenuItem icon='fa fa-cogs' tag='create_component'>Создать компонент</ContextMenuItem>
 			<ContextMenuItem icon='fa fa-trash' tag='delete_component'>Удалить</ContextMenuItem>
 		;
-	}
-	
-	
-	
-	/**
-	 * Render workspace
-	 */
-	pure Collection<UIStruct> renderWorkspaceTabs(Model data)
-	{
-		Collection<UIStruct> res = new Collection();
-		return res;
 	}
 	
 }
