@@ -1,5 +1,5 @@
 /*!
- *  Bayrell Development Console
+ *  Faydel Development Console
  *
  *  (c) Copyright 2019 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -16,21 +16,32 @@
  *  limitations under the License.
  */
 
-namespace BayrellConsole.Api;
+namespace FaydelConsole.Api;
 
 use Runtime.CoreStruct;
 use Runtime.RuntimeConstant;
 use Core.Backend.BackendProvider;
+use Core.FileSystem.FileIOResult;
 use Core.FileSystem.FileNode;
 use Core.FileSystem.FileSystemInterface;
 use Core.Http.ApiRequest;
 use Core.Http.ApiResult;
 use Core.UI.Annotations.ApiMethod;
-use BayrellConsole.Models.NavigatorItem;
+use FaydelConsole.Models.NavigatorItem;
 
 
 class Navigator extends CoreStruct
 {
+	
+	/**
+	 * Returns base path
+	 */
+	static string getBasePath(ContextInterface context)
+	{
+		BackendProvider app = context.getValue("default.app");
+		return app.base_path;
+	}
+	
 	
 	
 	/**
@@ -45,17 +56,17 @@ class Navigator extends CoreStruct
 	} 
 	public static async ApiResult loadTree(ContextInterface context, ApiRequest req)
 	{
+		string base_path = static::getBasePath(context);
 		string path = req.data.get("path", "", "string");
-		BackendProvider app = context.getValue("default.app");
 		FileSystemInterface fs = context.get("provider.default.fs");
-		Collection<string> arr = await fs.getDirectoryListing(app.base_path ~ "/lib" ~ path);
+		Collection<string> arr = await fs.getDirectoryListing(base_path ~ "/lib" ~ path);
 		Collection<FileNode> items = [];
 		
 		for (int i=0; i<arr.count(); i++)
 		{
 			string kind = FileNode::KIND_FILE;
 			string name = arr.item(i);
-			bool is_folder = await fs.isDir(app.base_path ~ "/lib" ~ path ~ "/" ~ name);
+			bool is_folder = await fs.isDir(base_path ~ "/lib" ~ path ~ "/" ~ name);
 			if (is_folder) kind = FileNode::KIND_FOLDER;
 			
 			items.push(
@@ -72,8 +83,6 @@ class Navigator extends CoreStruct
 		res <= result <= items;
 		return ApiResult::setError(res, RuntimeConstant::ERROR_OK, "Ok");
 	}
-	
-	
 	
 	
 	
@@ -110,24 +119,16 @@ class Navigator extends CoreStruct
 	} 
 	public static async ApiResult createNode(ContextInterface context, ApiRequest req)
 	{
-		/* Send result */
-		return ApiResult::setError(new ApiResult{ "result": result }, RuntimeConstant::ERROR_OK, "Ok");
-	}
-	
-	
-	
-	/**
-	 * Clear file
-	 * @param string path
-	 * @return bool
-	 */
-	@ApiMethod
-	{ 
-		"space": "Core.FileSystem.FileTransferInterface",
-		"name": "clearFile"
-	} 
-	public static async ApiResult clearFile(ContextInterface context, ApiRequest req)
-	{
+		
+		string base_path = static::getBasePath(context);
+		string path = req.data.get("path", "", "string");
+		string kind = req.data.get("kind", "", "string");
+		string clear = req.data.get("clear", false, "bool");
+		
+		/* Create file */
+		FileSystemInterface fs = context.get("provider.default.fs");
+		FileIOResult result = await fs.createNode(base_path ~ "/lib" ~ path, kind, {"clear": clear});
+		
 		/* Send result */
 		return ApiResult::setError(new ApiResult{ "result": result }, RuntimeConstant::ERROR_OK, "Ok");
 	}
@@ -145,10 +146,21 @@ class Navigator extends CoreStruct
 	@ApiMethod
 	{ 
 		"space": "Core.FileSystem.FileTransferInterface",
-		"name": "readString"
+		"name": "readBlock"
 	} 
-	public static async ApiResult readString(ContextInterface context, ApiRequest req)
+	public static async ApiResult readBlock(ContextInterface context, ApiRequest req)
 	{
+		string base_path = static::getBasePath(context);
+		string path = req.data.get("path", "", "string");
+		int offset = req.data.get("offset", 0, "int");
+		int count = req.data.get("count", -1, "int"); 
+		string content = "";
+		
+		/* Read block */
+		FileSystemInterface fs = context.get("provider.default.fs");
+		FileIOResult result = await fs.readBlock(base_path ~ "/lib" ~ path, offset, count);
+		result <= name <= path;
+		
 		/* Send result */
 		return ApiResult::setError(new ApiResult{ "result": result }, RuntimeConstant::ERROR_OK, "Ok");
 	}
@@ -166,52 +178,25 @@ class Navigator extends CoreStruct
 	@ApiMethod
 	{ 
 		"space": "Core.FileSystem.FileTransferInterface",
-		"name": "writeString"
-	} 
-	public static async ApiResult writeString(ContextInterface context, ApiRequest req)
-	{
-		/* Send result */
-		return ApiResult::setError(new ApiResult{ "result": result }, RuntimeConstant::ERROR_OK, "Ok");
-	}
-	
-	
-	
-	/**
-	 * Read file
-	 * @param string path
-	 * @param int offset
-	 * @param int count
-	 * @return FileIOResult
-	 */
-	@ApiMethod
-	{ 
-		"space": "Core.FileSystem.FileTransferInterface",
-		"name": "readBlock"
-	} 
-	public static async ApiResult readBlock(ContextInterface context, ApiRequest req)
-	{
-		/* Send result */
-		return ApiResult::setError(new ApiResult{ "result": result }, RuntimeConstant::ERROR_OK, "Ok");
-	}
-	
-	
-	
-	/**
-	 * Write file
-	 * @param string path
-	 * @param Collection<byte> content
-	 * @param int offset
-	 * @return FileIOResult
-	 */
-	@ApiMethod
-	{ 
-		"space": "Core.FileSystem.FileTransferInterface",
 		"name": "writeBlock"
 	} 
 	public static async ApiResult writeBlock(ContextInterface context, ApiRequest req)
 	{
+		string base_path = static::getBasePath(context);
+		string path = req.data.get("path", "", "string");
+		int offset = req.data.get("offset", 0, "int");
+		Collection<byte> bytes = req.data.get("bytes", null, classof Collection);
+		
+		/* Save block */
+		FileSystemInterface fs = context.get("provider.default.fs");
+		FileIOResult result = await fs.writeBlock(base_path ~ "/lib" ~ path, bytes, offset, -1);
+		result <= name <= path;
+		
 		/* Send result */
 		return ApiResult::setError(new ApiResult{ "result": result }, RuntimeConstant::ERROR_OK, "Ok");
 	}
+	
+	
+	
 	
 }

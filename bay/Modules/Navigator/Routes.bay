@@ -1,5 +1,5 @@
 /*!
- *  Bayrell Development Console
+ *  Faydel Development Console
  *
  *  (c) Copyright 2019 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -16,7 +16,7 @@
  *  limitations under the License.
  */
 
-namespace BayrellConsole.Modules.Navigator;
+namespace FaydelConsole.Modules.Navigator;
 
 use Runtime.Interfaces.ContextInterface;
 use Core.UI.Annotations.RouteInfo;
@@ -29,9 +29,9 @@ use Core.UI.Render.RenderContainer;
 use Core.UI.Render.WebContainer;
 use Core.Components.Tree.TreeModel;
 use Core.Components.Tree.TreeItem;
-use BayrellConsole.Modules.Navigator.Model;
-use BayrellConsole.Modules.Navigator.NavigatorItem;
-use BayrellConsole.Modules.Navigator.View;
+use FaydelConsole.Modules.Navigator.Model;
+use FaydelConsole.Modules.Navigator.NavigatorItem;
+use FaydelConsole.Modules.Navigator.View;
 
 
 class Routes extends CoreRoute
@@ -50,7 +50,7 @@ class Routes extends CoreRoute
 	{
 		
 		ApiResult res = await ApiRequest::callApi(
-			"BayrellConsole.Api.Navigator", "Core.FileSystem.FileTransferInterface", "getDirectoryListing",
+			"FaydelConsole.Api.Navigator", "Core.FileSystem.FileTransferInterface", "getDirectoryListing",
 			{}, context
 		);
 		

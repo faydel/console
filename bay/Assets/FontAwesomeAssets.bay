@@ -1,5 +1,5 @@
 /*!
- *  Bayrell Development Console
+ *  Faydel Development Console
  *
  *  (c) Copyright 2019 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -16,7 +16,7 @@
  *  limitations under the License.
  */
 
-namespace BayrellConsole.Assets;
+namespace FaydelConsole.Assets;
 
 use Runtime.RuntimeAssets;
 use Core.UI.Interfaces.AssetsInterface;

@@ -1,5 +1,5 @@
 /*!
- *  Bayrell Development Console
+ *  Faydel Development Console
  *
  *  (c) Copyright 2019 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -16,12 +16,12 @@
  *  limitations under the License.
  */
 
-namespace BayrellConsole.Api;
+namespace FaydelConsole.Api;
 
 use Runtime.Interfaces.ContextInterface;
 use Runtime.Interfaces.ModuleDescriptionInterface;
 use Core.UI.Interfaces.ApiDeclaringInterface;
-use BayrellConsole.Api.Navigator;
+use FaydelConsole.Api.Navigator;
 
 
 class ModuleDescription implements ModuleDescriptionInterface, ApiDeclaringInterface
@@ -33,7 +33,7 @@ class ModuleDescription implements ModuleDescriptionInterface, ApiDeclaringInter
 	 * @return string
 	 */
 	public static string getName(){
-		return "BayrellConsole.Api";
+		return "FaydelConsole.Api";
 	}
 	
 	

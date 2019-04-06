@@ -1,5 +1,5 @@
 /*!
- *  Bayrell Development Console
+ *  Faydel Development Console
  *
  *  (c) Copyright 2019 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -16,7 +16,7 @@
  *  limitations under the License.
  */
 
-namespace BayrellConsole.Modules.Navigator;
+namespace FaydelConsole.Modules.Navigator;
 
 use Runtime.RuntimeAssets;
 use Core.UI.Interfaces.AssetsInterface;
@@ -39,8 +39,8 @@ class Assets implements AssetsInterface
 			"Core.Components.Tree.TreeAssets",
 			"Core.FileSystem.Assets",
 			"Core.UI.Assets",
-			"BayrellConsole.Assets.CodeMirrorAssets",
-			"BayrellConsole.Assets.FontAwesomeAssets",
+			"FaydelConsole.Assets.CodeMirrorAssets",
+			"FaydelConsole.Assets.FontAwesomeAssets",
 		];
 	}
 	
@@ -64,16 +64,16 @@ class Assets implements AssetsInterface
 	{
 		return [
 			[
-				'/assets/BayrellConsole/Modules/Navigator/Editor/Editor.js',
-				'/assets/BayrellConsole/Modules/Navigator/Editor/EditorManager.js',
-				'/assets/BayrellConsole/Modules/Navigator/Editor/EditorModel.js',
-				'/assets/BayrellConsole/Modules/Navigator/Assets.js',
-				'/assets/BayrellConsole/Modules/Navigator/Manager.js',
-				'/assets/BayrellConsole/Modules/Navigator/Model.js',
-				'/assets/BayrellConsole/Modules/Navigator/ModuleDescription.js',
-				'/assets/BayrellConsole/Modules/Navigator/NavigatorItem.js',
-				'/assets/BayrellConsole/Modules/Navigator/Routes.js',
-				'/assets/BayrellConsole/Modules/Navigator/View.js',
+				'/assets/FaydelConsole/Modules/Navigator/Editor/Editor.js',
+				'/assets/FaydelConsole/Modules/Navigator/Editor/EditorManager.js',
+				'/assets/FaydelConsole/Modules/Navigator/Editor/EditorModel.js',
+				'/assets/FaydelConsole/Modules/Navigator/Assets.js',
+				'/assets/FaydelConsole/Modules/Navigator/Manager.js',
+				'/assets/FaydelConsole/Modules/Navigator/Model.js',
+				'/assets/FaydelConsole/Modules/Navigator/ModuleDescription.js',
+				'/assets/FaydelConsole/Modules/Navigator/NavigatorItem.js',
+				'/assets/FaydelConsole/Modules/Navigator/Routes.js',
+				'/assets/FaydelConsole/Modules/Navigator/View.js',
 			]
 		];
 	}

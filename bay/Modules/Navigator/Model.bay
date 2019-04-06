@@ -1,5 +1,5 @@
 /*!
- *  Bayrell Development Console
+ *  Faydel Development Console
  *
  *  (c) Copyright 2019 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -16,22 +16,22 @@
  *  limitations under the License.
  */
  
-namespace BayrellConsole.Modules.Navigator;
+namespace FaydelConsole.Modules.Navigator;
 
 use Runtime.CoreStruct;
 use Core.Components.ContextMenu.ContextMenuModel;
 use Core.Components.Tree.TreeItem;
 use Core.Components.Tree.TreeModel;
 use Core.FileSystem.FileNode;
-use BayrellConsole.Modules.Navigator.Editor.EditorModel;
-use BayrellConsole.Modules.Navigator.NavigatorItem;
+use FaydelConsole.Modules.Navigator.Editor.EditorModel;
+use FaydelConsole.Modules.Navigator.NavigatorItem;
 
 
 struct Model extends CoreStruct
 {
 	
-	public TreeModel navigator = null;
-	public EditorModel editor = null;
+	public TreeModel navigator = new TreeModel();
+	public EditorModel editor = new EditorModel();
 	public ContextMenuModel navigator_menu = new ContextMenuModel();
 	
 }

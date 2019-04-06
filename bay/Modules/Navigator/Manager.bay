@@ -1,5 +1,5 @@
 /*!
- *  Bayrell Development Console
+ *  Faydel Development Console
  *
  *  (c) Copyright 2019 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -16,8 +16,9 @@
  *  limitations under the License.
  */
 
-namespace BayrellConsole.Modules.Navigator;
+namespace FaydelConsole.Modules.Navigator;
 
+use Runtime.RuntimeUtils;
 use Core.Components.ContextMenu.ContextMenuItemClickEvent;
 use Core.Components.Tree.TreeItem;
 use Core.Components.Tree.TreeItemSelectEvent;
@@ -35,8 +36,8 @@ use Core.UI.Events.MouseEvent.MouseClickEvent;
 use Core.UI.Events.MouseEvent.MouseContextMenuEvent;
 use Core.UI.Events.UserEvent.ChangeEvent;
 use Core.UI.Render.CoreManager;
-use BayrellConsole.Modules.Navigator.Model;
-use BayrellConsole.Modules.Navigator.NavigatorItem;
+use FaydelConsole.Modules.Navigator.Model;
+use FaydelConsole.Modules.Navigator.NavigatorItem;
 
 
 class Manager extends CoreManager
@@ -77,6 +78,12 @@ class Manager extends CoreManager
 	
 	
 	
+	/* Controller editor */
+	@BindModel{ "model": "editor" }
+	public assignable UIController editor = new UIController();
+	
+	
+	
 	/* Controller navigator */
 	
 	
@@ -94,24 +101,36 @@ class Manager extends CoreManager
 	{
 		
 		/* Get path */
-		Collection<string> path1 = rs::explode(".", event.path);
-		Collection<int> path = path1.map( method rtl::toInt );
+		Collection<int> path = TreeModel::splitPath(event.path);
 		
 		/* Check is folder */
 		TreeModel navigator = this.model.navigator;
 		NavigatorItem item = TreeModel::getTreeItem(navigator, path);
 		if (item.kind != NavigatorItem::KIND_FOLDER) 
 		{
-			return;
+			await static::reloadFile(path);
+		}
+		else
+		{
+			await static::reloadFolder(path);
 		}
 		
+		
+	}
+	
+	
+	
+	/**
+	 * Reload folder by path
+	 */
+	public async void reloadFolder(Collection<int> path)
+	{
 		/* Get folder path */
-		Collection<TreeItem> items = TreeModel::getTreePath(this.model.navigator, path);
-		string path_str = "/" ~ rs::implode("/", items.map( lambda string (TreeItem item) => item.name ));
+		string path_str = "/" ~ TreeModel::getNamePath(this.model.navigator, path);
 		
 		/* Call api */
 		ApiResult res = await ApiRequest::callApi(
-			"BayrellConsole.Api.Navigator",
+			"FaydelConsole.Api.Navigator",
 			"Core.FileSystem.FileTransferInterface",
 			"getDirectoryListing",
 			{
@@ -135,6 +154,54 @@ class Manager extends CoreManager
 				"navigator": navigator
 			});
 		}
+	}
+	
+	
+	
+	/**
+	 * Reload file by path
+	 */
+	public async void reloadFile(Collection<int> path)
+	{
+		/* Get folder path */
+		string path_str = "/" ~ TreeModel::getNamePath(this.model.navigator, path);
+		int offset = 0;
+		int filesize = -1;
+		Vector<byte> content = new Vector();
+		
+		/* Load file content */
+		while (filesize == -1 or offset < filesize)
+		{
+			
+			ApiResult res = await ApiRequest::callApi(
+				"FaydelConsole.Api.Navigator",
+				"Core.FileSystem.FileTransferInterface",
+				"readBlock",
+				{
+					"path": path_str,
+					"offset": offset,
+				}
+			);
+			
+			if (res.code != 1) break;
+			
+			offset += res.result.count;
+			filesize = res.result.size;
+			content.appendVector(res.result.bytes);
+			
+			if (res.result.eof) break;
+		}
+		
+		string s = RuntimeUtils::bytesToString(content);
+		/*rtl::dump(s);*/
+		
+		/* Update Model */
+		EditorModel editor = this.model.editor;
+		editor <= path <= path;
+		editor <= content <= s;
+		this.updateModel({
+			"editor": editor
+		});
 	}
 	
 	
@@ -208,7 +275,7 @@ class Manager extends CoreManager
 	{
 		
 		ApiResult res = await ApiRequest::callApi(
-			"BayrellConsole.Api.Navigator",
+			"FaydelConsole.Api.Navigator",
 			"Core.FileSystem.FileTransferInterface",
 			"getDirectoryListing",
 			{}
@@ -220,6 +287,68 @@ class Manager extends CoreManager
 		this.updateModel({
 			"navigator": navigator
 		});
+	}
+	
+	
+	
+	/* Controller save_button */
+	
+	@EventAsync{ "event": classof MouseClickEvent, "method_name": "onSave" }
+	public assignable UIController save_button = new UIController();
+	
+	
+	
+	/**
+	 * Reload navigation
+	 */
+	public async void onSave(MouseClickEvent e)
+	{
+		EditorModel editor = this.model.editor;
+		string path_str = "/" ~ TreeModel::getNamePath(this.model.navigator, editor.path);
+		Collection<byte> content = RuntimeUtils::stringToBytes(editor.content);
+		
+		
+		int offset = 0;
+		int filesize = content.count();
+		int count = 1048576;
+		
+		
+		/* Create and clear file */
+		ApiResult res = await ApiRequest::callApi(
+			"FaydelConsole.Api.Navigator",
+			"Core.FileSystem.FileTransferInterface",
+			"createNode",
+			{
+				"path": path_str,
+				"kind": FileNode::KIND_FILE,
+				"clear": true,
+			}
+		);
+		
+		if (res.code == 1)
+		{
+			/* Save file content */
+			while (offset < filesize)
+			{
+				
+				ApiResult res = await ApiRequest::callApi(
+					"FaydelConsole.Api.Navigator",
+					"Core.FileSystem.FileTransferInterface",
+					"writeBlock",
+					{
+						"path": path_str,
+						"offset": offset,
+						"bytes": content.slice(offset, count),
+					}
+				);
+				
+				if (res.code != 1) break;
+				if (res.result.count == 0) break;
+				
+				offset += res.result.count;
+			}
+		}
+		
 	}
 	
 }

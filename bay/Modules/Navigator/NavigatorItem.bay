@@ -1,5 +1,5 @@
 /*!
- *  Bayrell Development Console
+ *  Faydel Development Console
  *
  *  (c) Copyright 2019 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -16,7 +16,7 @@
  *  limitations under the License.
  */
  
-namespace BayrellConsole.Modules.Navigator;
+namespace FaydelConsole.Modules.Navigator;
 
 use Runtime.CoreStruct;
 use Core.Components.Tree.TreeItem;

@@ -1,5 +1,5 @@
 /*!
- *  Bayrell Development Console
+ *  Faydel Development Console
  *
  *  (c) Copyright 2019 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -16,7 +16,7 @@
  *  limitations under the License.
  */
 
-namespace BayrellConsole.Modules.Navigator.Editor;
+namespace FaydelConsole.Modules.Navigator.Editor;
 
 use Core.Components.ContextMenu.ContextMenuItemClickEvent;
 use Core.UI.UIController;
@@ -26,7 +26,7 @@ use Core.UI.Annotations.Event;
 use Core.UI.Annotations.EventAsync;
 use Core.UI.Events.MountEvent;
 use Core.UI.Render.CoreManager;
-use BayrellConsole.Modules.Navigator.Editor.EditorModel;
+use FaydelConsole.Modules.Navigator.Editor.EditorModel;
 
 
 class EditorManager extends CoreManager
@@ -67,11 +67,40 @@ class EditorManager extends CoreManager
 				this.timer_change = null;
 			}
 			this.timer_change = setTimeout(() => {
-				
+				var content = this.textarea_editor.ref.editor.getValue();
+				if (content != this.model.content)
+				{
+					this.updateModel(new Runtime.Dict({
+						"content": content,
+					}));
+				}
 			}, 250);
 		});
 		#endswitch
 		
+	}
+	
+	
+	
+	/**
+	 * Update current manager
+	 */
+	public void updateManager()
+	{
+		if (this.isModelUpdated())
+		{
+			#switch
+			#case ifcode ES6 then
+			if (this.textarea_editor.ref && this.textarea_editor.ref.editor)
+			{
+				var content = this.textarea_editor.ref.editor.getValue();
+				if (content != this.model.content)
+				{
+					this.textarea_editor.ref.editor.setValue( this.model.content );
+				}
+			}
+			#endswitch
+		}
 	}
 	
 	

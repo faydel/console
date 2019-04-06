@@ -1,5 +1,5 @@
 /*!
- *  Bayrell Development Console
+ *  Faydel Development Console
  *
  *  (c) Copyright 2019 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -16,11 +16,11 @@
  *  limitations under the License.
  */
 
-namespace BayrellConsole.Modules.Navigator.Editor;
+namespace FaydelConsole.Modules.Navigator.Editor;
 
 use Core.UI.Render.CoreView;
-use BayrellConsole.Modules.Navigator.Editor.EditorManager;
-use BayrellConsole.Modules.Navigator.Editor.EditorModel;
+use FaydelConsole.Modules.Navigator.Editor.EditorManager;
+use FaydelConsole.Modules.Navigator.Editor.EditorModel;
 
 
 struct Editor extends CoreView
@@ -67,7 +67,9 @@ struct Editor extends CoreView
 	lambda string css(Dict<string> vars) => 
 		@css{
 			%console_editor{
-				height: 100%;
+				position: relative;
+				width: 100%;
+				height: calc(100vh - 25px);
 			}
 			%console_editor > textarea{
 				display: none;

@@ -1,5 +1,5 @@
 /*!
- *  Bayrell Development Console
+ *  Faydel Development Console
  *
  *  (c) Copyright 2019 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -16,14 +16,14 @@
  *  limitations under the License.
  */
 
-namespace BayrellConsole.Modules.Navigator;
+namespace FaydelConsole.Modules.Navigator;
 
 use Runtime.Interfaces.ContextInterface;
 use Runtime.Interfaces.ModuleDescriptionInterface;
 use Core.UI.Interfaces.RoutesDeclaringInterface;
 use Core.UI.Interfaces.FrontendInterface;
-use BayrellConsole.Modules.Navigator.Api;
-use BayrellConsole.Modules.Navigator.Routes;
+use FaydelConsole.Modules.Navigator.Api;
+use FaydelConsole.Modules.Navigator.Routes;
 
 
 class ModuleDescription implements ModuleDescriptionInterface, RoutesDeclaringInterface, FrontendInterface
@@ -36,7 +36,7 @@ class ModuleDescription implements ModuleDescriptionInterface, RoutesDeclaringIn
 	 */
 	public static string getName()
 	{
-		return "BayrellConsole.Modules.Navigator";
+		return "FaydelConsole.Modules.Navigator";
 	}
 	
 	

@@ -1,5 +1,5 @@
 /*!
- *  Bayrell Development Console
+ *  Faydel Development Console
  *
  *  (c) Copyright 2019 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -16,14 +16,14 @@
  *  limitations under the License.
  */
 
-namespace BayrellConsole.Modules.Navigator;
+namespace FaydelConsole.Modules.Navigator;
 
 use Core.UI.Render.CoreView;
-use BayrellConsole.Modules.Navigator.Assets;
-use BayrellConsole.Modules.Navigator.Manager;
-use BayrellConsole.Modules.Navigator.Model;
-use BayrellConsole.Modules.Navigator.NavigatorItem;
-use BayrellConsole.Modules.Navigator.Editor.Editor;
+use FaydelConsole.Modules.Navigator.Assets;
+use FaydelConsole.Modules.Navigator.Manager;
+use FaydelConsole.Modules.Navigator.Model;
+use FaydelConsole.Modules.Navigator.NavigatorItem;
+use FaydelConsole.Modules.Navigator.Editor.Editor;
 use Core.Components.Tabs.Tabs;
 use Core.Components.Tree.Tree;
 use Core.Components.ContextMenu.ContextMenu;
@@ -81,17 +81,28 @@ struct View extends CoreView
 			%console_main{
 				padding: 0px;
 				height: 100vh;
+				width: 100%;
+			}
+			%console_menu{
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-start;
+				align-items: center;
+				height: 25px;
+			}
+			%console_content{
 				display: table;
 				width: 100%;
+				height: calc(100% - 25px);
 			}
 			%console_left, %console_workspace{
 				display: table-cell;
 				vertical-align: top;
+				height: 100%;
 			}
 			%console_left{
 				position: relative;
 				width: 300px;
-				height: 100%;
 			}
 			%console_left %(Tree)tree{
 				overflow: auto;
@@ -99,7 +110,6 @@ struct View extends CoreView
 			}
 			%console_workspace{
 				position: relative;
-				height: 100%;
 			}
 			%console_main %(Tree)tree_icon{
 				color: slateblue;
@@ -131,16 +141,19 @@ struct View extends CoreView
 	lambda Collection<UIStruct> render(Model data, Collection<UIStruct> children) =>
 		
 		<div @key='main' @class='console_main' @control='console_main'>
-			
-			<div @class='console_left'>
+			<div @class='console_menu'>
 				<button @control='reload_button'>Reload</button>
-				<Tree @model={ data.navigator } @key='navigator' @control='navigator' 
-					get_icon={ method static::getIcon }></Tree>
+				<button @control='save_button'>Save</button>
 			</div>
-			<div @class='console_workspace'>
-				<Editor @model={ data.editor }></Editor>
+			<div @class='console_content'>
+				<div @class='console_left'>
+					<Tree @model={ data.navigator } @key='navigator' @control='navigator' 
+						get_icon={ method static::getIcon }></Tree>
+				</div>
+				<div @class='console_workspace'>
+					<Editor @model={ data.editor } @control='editor'></Editor>
+				</div>
 			</div>
-			
 		</div>
 		<ContextMenu @model={ data.navigator_menu } @key="navigator_menu" @control="navigator_menu">
 			{ static::renderContextMenuItems(data) }
