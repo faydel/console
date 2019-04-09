@@ -31,7 +31,125 @@ struct Model extends CoreStruct
 {
 	
 	public TreeModel navigator = new TreeModel();
-	public EditorModel editor = new EditorModel();
-	public ContextMenuModel navigator_menu = new ContextMenuModel();
+	public Collection<EditorModel> editors = new Collection<EditorModel>();
+	public ContextMenuModel navigator_contextmenu = new ContextMenuModel();
+	public int current_max_id = 0;
+	public int current_open_id = -1;
+	
+	
+	
+	/**
+	 * Returns open editor
+	 * @param Model model
+	 */
+	pure int getOpenEditorPos(Model model)
+	{
+		/* Find position by path */
+		int pos = model.editors.find(
+			lambda bool (EditorModel editor, int id) => editor.id == id,
+			model.current_open_id
+		);
+		
+		return pos;
+	}
+	
+	
+	
+	/**
+	 * Returns open editor
+	 * @param Model model
+	 */
+	pure EditorModel getOpenEditor(Model model)
+	{
+		/* Find position by path */
+		int pos = model.editors.find(
+			lambda bool (EditorModel editor, int id) => editor.id == id,
+			model.current_open_id
+		);
+		
+		if (pos == -1) return null;
+		return model.editors.get(pos, null);
+	}
+	
+	
+	
+	/**
+	 * Open editor
+	 */
+	pure Model openEditor(Model model, string path_str, string content)
+	{
+		int current_open_id = model.current_open_id;
+		
+		/* Find position by path */
+		int pos = model.editors.find(
+			lambda bool (EditorModel editor, string path_str) => editor.path_str == path_str,
+			path_str
+		);
+		
+		if (pos == -1)
+		{
+			int editor_id = model.current_max_id;
+			EditorModel editor = new EditorModel
+			{ 
+				"id": editor_id, 
+				"path_str": path_str, 
+				"content": content
+			};
+			model = model.copy({
+				"current_max_id": model.current_max_id + 1,
+				"current_open_id": editor_id,
+				"editors": model.editors.appendIm(editor),
+			});
+		}
+		else
+		{
+			EditorModel editor = model.editors.item(pos).copy({ "content": content });
+			model = model.copy({
+				"current_open_id": editor.id,
+				"editors": model.editors.setIm(pos, editor),
+			});
+		}
+		
+		return model;
+	}
+	
+	
+	
+	/**
+	 * Show navigator context menu
+	 */
+	pure Model showNavigatorContextMenu(Model model, bool is_active, int x = 0, int y = 0)
+	{
+		ContextMenuModel navigator_contextmenu = model.navigator_contextmenu;
+		
+		if (is_active)
+		{
+			navigator_contextmenu = navigator_contextmenu.copy({
+				"is_active": is_active,
+				"x": x,
+				"y": y,
+			});
+		}
+		else
+		{
+			navigator_contextmenu = navigator_contextmenu.copy({
+				"is_active": is_active,
+			});
+		}
+		
+		model <= navigator_contextmenu <= navigator_contextmenu;
+		return model;
+	}
+	
+	
+	
+	/**
+	 * Show navigator context menu
+	 */
+	pure Model selectNavigatorPath(Model model, string path)
+	{
+		model <= navigator <= selected <= path;
+		return model;
+	}
 	
 }

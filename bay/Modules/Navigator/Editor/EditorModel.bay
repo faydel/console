@@ -24,7 +24,18 @@ use Runtime.CoreStruct;
 struct EditorModel extends CoreStruct
 {
 	
-	public Collection<int> path = null;
+	public int id = 0;
+	public string path_str = null;
 	public string content = "";
+
+	
+	/**
+	 * Returns tab title
+	 */
+	pure string getTabTitle(EditorModel model)
+	{
+		Collection<string> items = rs::explode("/", model.path_str);
+		return items.last("");
+	}
 	
 }

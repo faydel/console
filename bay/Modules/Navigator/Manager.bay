@@ -32,6 +32,7 @@ use Core.UI.Annotations.BindValue;
 use Core.UI.Annotations.BindModel;
 use Core.UI.Annotations.Event;
 use Core.UI.Annotations.EventAsync;
+use Core.UI.Events.ModelChange;
 use Core.UI.Events.MouseEvent.MouseClickEvent;
 use Core.UI.Events.MouseEvent.MouseContextMenuEvent;
 use Core.UI.Events.UserEvent.ChangeEvent;
@@ -59,11 +60,10 @@ class Manager extends CoreManager
 	 */
 	public void onConsoleMainClick(MouseClickEvent event)
 	{
-		ContextMenuModel navigator_menu = this.model.navigator_menu;
-		navigator_menu <= is_active <= false;
-		this.updateModel({
-			"navigator_menu": navigator_menu,
-		});
+		/* Hide context menu */
+		Model model = this.model;
+		model = Model::showNavigatorContextMenu(model, false);
+		this.setModel(model);
 	}
 	
 	
@@ -78,9 +78,70 @@ class Manager extends CoreManager
 	
 	
 	
+	/* Controller tabs */
+	@Event{ "event": classof ModelChange, "method_name": "onTabsModelChange" }
+	/*@Injection{ "parent_controller": "tab_header", "component_controller": "tab_header" }*/
+	public assignable UIController tabs = new UIController();
+	
+	
+	@Event{ "event": classof MouseContextMenuEvent, "method_name": "onTabsHeaderContextMenu" }
+	public assignable UIController tab_header = new UIController();
+	
+	
+	/**
+	 * Model Change
+	 */
+	public void onTabsModelChange(onModelChange event)
+	{
+		EditorModel tag = event.model.active_tag;
+		
+		if (tag != null)
+		{
+			this.updateModel({
+				"current_open_id": tag.id,
+			});
+		}
+		else
+		{
+			this.updateModel({
+				"current_open_id": -1,
+			});
+		}
+	}
+	
+	
+	
+	/**
+	 * Model Change
+	 */
+	public void onTabsHeaderContextMenu(MouseContextMenuEvent event)
+	{
+	
+	}
+	
+	
+	
 	/* Controller editor */
-	@BindModel{ "model": "editor" }
+	@Event{ "event": classof ModelChange, "method_name": "onEditorModelChange" }
 	public assignable UIController editor = new UIController();
+	
+	
+	/**
+	 * Model Change
+	 */
+	public void onEditorModelChange(onModelChange event)
+	{
+		/* Find position by path */
+		int pos = this.model.editors.find(
+			lambda bool (EditorModel editor, EditorModel search) => editor.id == search.id,
+			event.model
+		);
+		
+		/* Update model */
+		this.updateModel({
+			"editors": this.model.editors.setIm(pos, event.model)
+		});
+	}
 	
 	
 	
@@ -88,8 +149,8 @@ class Manager extends CoreManager
 	
 	
 	@BindModel{ "model": "navigator" }
-	@Event{ "event": classof TreeItemContextMenuEvent, "method_name": "onItemContextMenu" }
-	@EventAsync{ "event": classof TreeItemDoubleClickEvent, "method_name": "onItemDoubleClick" }
+	@Event{ "event": classof TreeItemContextMenuEvent, "method_name": "onNavigatorItemContextMenu", "cancel": true }
+	@EventAsync{ "event": classof TreeItemDoubleClickEvent, "method_name": "onNavigatorItemDoubleClick" }
 	public assignable UIController navigator = new UIController();
 	
 	
@@ -97,7 +158,24 @@ class Manager extends CoreManager
 	/**
 	 * Reload navigation
 	 */
-	public async void onItemDoubleClick(TreeItemDoubleClickEvent event)
+	public void onNavigatorItemContextMenu(TreeItemContextMenuEvent e)
+	{
+		e.event.cancel();
+		
+		Model model = this.model;
+		
+		model = Model::showNavigatorContextMenu(model, true, e.event.clientX, e.event.clientY);
+		model = Model::selectNavigatorPath(model, e.path);
+		
+		this.setModel(model);
+	}
+	
+	
+	
+	/**
+	 * Reload navigation
+	 */
+	public async void onNavigatorItemDoubleClick(TreeItemDoubleClickEvent event)
 	{
 		
 		/* Get path */
@@ -106,7 +184,7 @@ class Manager extends CoreManager
 		/* Check is folder */
 		TreeModel navigator = this.model.navigator;
 		NavigatorItem item = TreeModel::getTreeItem(navigator, path);
-		if (item.kind != NavigatorItem::KIND_FOLDER) 
+		if (item.kind != NavigatorItem::KIND_FOLDER)
 		{
 			await static::reloadFile(path);
 		}
@@ -192,44 +270,13 @@ class Manager extends CoreManager
 			if (res.result.eof) break;
 		}
 		
-		string s = RuntimeUtils::bytesToString(content);
+		string content_str = RuntimeUtils::bytesToString(content);
 		/*rtl::dump(s);*/
 		
 		/* Update Model */
-		EditorModel editor = this.model.editor;
-		editor <= path <= path;
-		editor <= content <= s;
-		this.updateModel({
-			"editor": editor
-		});
+		Model model = Model::openEditor( this.model, path_str, content_str );
+		this.setModel(model);
 	}
-	
-	
-	
-	/**
-	 * Reload navigation
-	 */
-	public void onItemContextMenu(TreeItemContextMenuEvent e)
-	{
-		e.event.cancel();
-		
-		ContextMenuModel navigator_menu = this.model.navigator_menu;
-		navigator_menu = navigator_menu.copy({
-			"is_active": true,
-			"x": e.event.clientX,
-			"y": e.event.clientY,
-		});
-		
-		
-		TreeModel navigator = this.model.navigator;
-		navigator <= selected <= e.path;
-		this.updateModel({
-			"navigator": navigator,
-			"navigator_menu": navigator_menu,
-		});
-		
-	}
-	
 	
 	
 	
@@ -237,25 +284,102 @@ class Manager extends CoreManager
 	/* Controller navigator_menu */
 	
 	
-	@Event{ "event": classof ContextMenuItemClickEvent, "method_name": "onNavigatorMenuClick" }
-	public assignable UIController navigator_menu = new UIController();
+	@EventAsync{ 
+		"event": classof ContextMenuItemClickEvent, 
+		"method_name": "onNavigatorContextMenuClick", 
+		"cancel": true 
+	}
+	public assignable UIController navigator_contextmenu = new UIController();
 	
 	
 	
 	/**
-	 * Navigation manu item click
+	 * Navigation menu item click
 	 */
-	public void onNavigatorMenuClick(ContextMenuItemClickEvent e)
+	public async void onNavigatorContextMenuClick(ContextMenuItemClickEvent e)
 	{
-		e.event.cancel();
 		
-		console.log(e.tag);
+		/* Hide context menu */
+		Model model = this.model;
+		model = Model::showNavigatorContextMenu(model, false);
+		this.setModel(model);
 		
-		ContextMenuModel navigator_menu = this.model.navigator_menu;
-		navigator_menu <= is_active <= false;
-		this.updateModel({
-			"navigator_menu": navigator_menu,
-		});
+		
+		Collection<int> path = TreeModel::splitPath( this.model.navigator.selected );
+		if (e.tag == 'create_file')
+		{
+			await static::createFile(path);
+		}
+		else if (e.tag == 'create_directory')
+		{
+			await static::createFolder(path);
+		}
+		else if (e.tag == 'delete_node')
+		{
+			await static::deleteNode(path);
+		}
+	}
+	
+	
+	
+	/**
+	 * Create new file
+	 */
+	public async void createFile(Collection<int> path)
+	{
+		NavigatorItem item = TreeModel::getTreeItem(this.model.navigator, path);
+		string path_str = "/" ~ TreeModel::getNamePath(this.model.navigator, path);
+		
+		if (item.kind == NavigatorItem::KIND_FOLDER)
+		{
+			console.log( "Create file in " ~ path_str );
+		}
+		else
+		{
+			console.log( "File must be folder" );
+		}
+		
+	}
+	
+	
+	
+	/**
+	 * Create new folder
+	 */
+	public async void createFolder(Collection<int> path)
+	{
+		NavigatorItem item = TreeModel::getTreeItem(this.model.navigator, path);
+		string path_str = "/" ~ TreeModel::getNamePath(this.model.navigator, path);
+		
+		if (item.kind == NavigatorItem::KIND_FOLDER)
+		{
+			console.log( "Create folder in " ~ path_str );
+		}
+		else
+		{
+			console.log( "File must be folder" );
+		}
+	}
+	
+	
+	
+	/**
+	 * Delete node
+	 */
+	public async void deleteNode(Collection<int> path)
+	{
+		NavigatorItem item = TreeModel::getTreeItem(this.model.navigator, path);
+		string path_str = "/" ~ TreeModel::getNamePath(this.model.navigator, path);
+		
+		if (item.kind == NavigatorItem::KIND_FOLDER)
+		{
+			console.log( "Delete folder " ~ path_str );
+		}
+		else
+		{
+			console.log( "Delete file " ~ path_str );
+		}
+		
 	}
 	
 	
@@ -273,7 +397,6 @@ class Manager extends CoreManager
 	 */
 	public async void onReload(MouseClickEvent e)
 	{
-		
 		ApiResult res = await ApiRequest::callApi(
 			"FaydelConsole.Api.Navigator",
 			"Core.FileSystem.FileTransferInterface",
@@ -303,8 +426,11 @@ class Manager extends CoreManager
 	 */
 	public async void onSave(MouseClickEvent e)
 	{
-		EditorModel editor = this.model.editor;
-		string path_str = "/" ~ TreeModel::getNamePath(this.model.navigator, editor.path);
+		EditorModel editor = Model::getOpenEditor(this.model);
+		if (editor == null)
+			return;
+		
+		string path_str = editor.path_str;
 		Collection<byte> content = RuntimeUtils::stringToBytes(editor.content);
 		
 		

@@ -24,8 +24,11 @@ use FaydelConsole.Modules.Navigator.Manager;
 use FaydelConsole.Modules.Navigator.Model;
 use FaydelConsole.Modules.Navigator.NavigatorItem;
 use FaydelConsole.Modules.Navigator.Editor.Editor;
+use FaydelConsole.Modules.Navigator.Editor.EditorModel;
 use Core.Components.Tabs.Tabs;
+use Core.Components.Tabs.TabsItem;
 use Core.Components.Tree.Tree;
+use Core.Components.Tree.TreeModel;
 use Core.Components.ContextMenu.ContextMenu;
 use Core.Components.ContextMenu.ContextMenuItem;
 
@@ -114,6 +117,9 @@ struct View extends CoreView
 			%console_main %(Tree)tree_icon{
 				color: slateblue;
 			}
+			%(Editor)console_editor{
+				height: calc(100vh - 55px);
+			}
 		}
 	;
 	
@@ -135,6 +141,7 @@ struct View extends CoreView
 	/* public static callback getIcon = method static::getIcon; */
 	
 	
+	
 	/**
 	 * Component render
 	 */
@@ -151,14 +158,42 @@ struct View extends CoreView
 						get_icon={ method static::getIcon }></Tree>
 				</div>
 				<div @class='console_workspace'>
-					<Editor @model={ data.editor } @control='editor'></Editor>
+					{ static::renderWorkspace(data) }
 				</div>
 			</div>
 		</div>
-		<ContextMenu @model={ data.navigator_menu } @key="navigator_menu" @control="navigator_menu">
+		<ContextMenu @model={ data.navigator_contextmenu } @key="navigator_contextmenu" @control="navigator_contextmenu">
 			{ static::renderContextMenuItems(data) }
 		</ContextMenu>
 	;
+	
+	
+	
+	/**
+	 * Render workspace
+	 */
+	pure Collection<UIStruct> renderWorkspace(Model data)
+	{
+		/* Find position by current_open_path */
+		int active_pos = Model::getOpenEditorPos(data);
+		
+		mixed active_tag = null;
+		if (active_pos >= 0)
+		{
+			active_tag = data.editors.item(active_pos);
+		}
+		
+		return 
+			<Tabs active={ "tab"~active_pos } @control='tabs'>
+				{ data.editors.map( 
+					lambda Collection<UIStruct> (EditorModel item, int index) =>
+						<TabsItem key={ "tab"~index } title={ EditorModel::getTabTitle(item) } tag={ item }>
+							<Editor @model={ item } @control='editor' index={ index }  path={ item.path_str }></Editor>
+						</TabsItem>
+				) }
+			</Tabs>
+		;
+	}
 	
 	
 	
@@ -167,10 +202,26 @@ struct View extends CoreView
 	 */
 	pure Collection<UIStruct> renderContextMenuItems(Model data)
 	{
-		return 
-			<ContextMenuItem icon='fa fa-cogs' tag='create_component'>Создать компонент</ContextMenuItem>
-			<ContextMenuItem icon='fa fa-trash' tag='delete_component'>Удалить</ContextMenuItem>
-		;
+		if (data.navigator.selected == "")
+			return "";
+		
+		Collection<int> path = TreeModel::splitPath( data.navigator.selected );
+		NavigatorItem item = TreeModel::getTreeItem( data.navigator, path );
+		
+		if (item.kind == NavigatorItem::KIND_FOLDER)
+		{
+			return 
+				<ContextMenuItem icon='fa fa-cogs' tag='create_file'>Создать файл</ContextMenuItem>
+				<ContextMenuItem icon='fa fa-cogs' tag='create_directory'>Создать папку</ContextMenuItem>
+				<ContextMenuItem icon='fa fa-trash' tag='delete_node'>Удалить</ContextMenuItem>
+			;
+		}
+		else
+		{
+			return 
+				<ContextMenuItem icon='fa fa-trash' tag='delete_node'>Удалить</ContextMenuItem>
+			;
+		}
 	}
 	
 }
