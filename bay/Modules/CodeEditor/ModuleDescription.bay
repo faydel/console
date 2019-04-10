@@ -16,14 +16,14 @@
  *  limitations under the License.
  */
 
-namespace FaydelConsole.Modules.Navigator;
+namespace FaydelConsole.Modules.CodeEditor;
 
 use Runtime.Interfaces.ContextInterface;
 use Runtime.Interfaces.ModuleDescriptionInterface;
 use Core.UI.Interfaces.RoutesDeclaringInterface;
 use Core.UI.Interfaces.FrontendInterface;
-use FaydelConsole.Modules.Navigator.Api;
-use FaydelConsole.Modules.Navigator.Routes;
+use FaydelConsole.Modules.CodeEditor.Api;
+use FaydelConsole.Modules.CodeEditor.Routes;
 
 
 class ModuleDescription implements ModuleDescriptionInterface, RoutesDeclaringInterface, FrontendInterface
@@ -36,7 +36,7 @@ class ModuleDescription implements ModuleDescriptionInterface, RoutesDeclaringIn
 	 */
 	public static string getName()
 	{
-		return "FaydelConsole.Modules.Navigator";
+		return "FaydelConsole.Modules.CodeEditor";
 	}
 	
 	

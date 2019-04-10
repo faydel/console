@@ -16,14 +16,14 @@
  *  limitations under the License.
  */
 
-namespace FaydelConsole.Modules.Navigator;
+namespace FaydelConsole.Modules.CodeEditor;
 
 use Runtime.RuntimeAssets;
 use Core.UI.Interfaces.AssetsInterface;
 use Core.UI.Render.RenderContainer;
 
 
-class Assets implements AssetsInterface
+class CodeEditorAssets implements AssetsInterface
 {
 
 	
@@ -35,6 +35,7 @@ class Assets implements AssetsInterface
 	{
 		return [
 			"Core.Components.ContextMenu.ContextMenuAssets",
+			"Core.Components.Navigator.NavigatorAssets",
 			"Core.Components.Tabs.TabsAssets",
 			"Core.Components.Tree.TreeAssets",
 			"Core.FileSystem.Assets",
@@ -64,16 +65,15 @@ class Assets implements AssetsInterface
 	{
 		return [
 			[
-				'/assets/FaydelConsole/Modules/Navigator/Editor/Editor.js',
-				'/assets/FaydelConsole/Modules/Navigator/Editor/EditorManager.js',
-				'/assets/FaydelConsole/Modules/Navigator/Editor/EditorModel.js',
-				'/assets/FaydelConsole/Modules/Navigator/Assets.js',
-				'/assets/FaydelConsole/Modules/Navigator/Manager.js',
-				'/assets/FaydelConsole/Modules/Navigator/Model.js',
-				'/assets/FaydelConsole/Modules/Navigator/ModuleDescription.js',
-				'/assets/FaydelConsole/Modules/Navigator/NavigatorItem.js',
-				'/assets/FaydelConsole/Modules/Navigator/Routes.js',
-				'/assets/FaydelConsole/Modules/Navigator/View.js',
+				'/assets/FaydelConsole/Modules/CodeEditor/Editor/Editor.js',
+				'/assets/FaydelConsole/Modules/CodeEditor/Editor/EditorManager.js',
+				'/assets/FaydelConsole/Modules/CodeEditor/Editor/EditorModel.js',
+				'/assets/FaydelConsole/Modules/CodeEditor/CodeEditor.js',
+				'/assets/FaydelConsole/Modules/CodeEditor/CodeEditorAssets.js',
+				'/assets/FaydelConsole/Modules/CodeEditor/CodeEditorManager.js',
+				'/assets/FaydelConsole/Modules/CodeEditor/CodeEditorModel.js',
+				'/assets/FaydelConsole/Modules/CodeEditor/ModuleDescription.js',
+				'/assets/FaydelConsole/Modules/CodeEditor/Routes.js',
 			]
 		];
 	}

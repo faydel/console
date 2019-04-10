@@ -16,23 +16,23 @@
  *  limitations under the License.
  */
  
-namespace FaydelConsole.Modules.Navigator;
+namespace FaydelConsole.Modules.CodeEditor;
 
 use Runtime.CoreStruct;
 use Core.Components.ContextMenu.ContextMenuModel;
+use Core.Components.Navigator.NavigatorItem;
+use Core.Components.Navigator.NavigatorModel;
 use Core.Components.Tree.TreeItem;
 use Core.Components.Tree.TreeModel;
 use Core.FileSystem.FileNode;
-use FaydelConsole.Modules.Navigator.Editor.EditorModel;
-use FaydelConsole.Modules.Navigator.NavigatorItem;
+use FaydelConsole.Modules.CodeEditor.Editor.EditorModel;
 
 
-struct Model extends CoreStruct
+struct CodeEditorModel extends CoreStruct
 {
 	
-	public TreeModel navigator = new TreeModel();
+	public NavigatorModel navigator = new NavigatorModel();
 	public Collection<EditorModel> editors = new Collection<EditorModel>();
-	public ContextMenuModel navigator_contextmenu = new ContextMenuModel();
 	public int current_max_id = 0;
 	public int current_open_id = -1;
 	
@@ -110,45 +110,6 @@ struct Model extends CoreStruct
 			});
 		}
 		
-		return model;
-	}
-	
-	
-	
-	/**
-	 * Show navigator context menu
-	 */
-	pure Model showNavigatorContextMenu(Model model, bool is_active, int x = 0, int y = 0)
-	{
-		ContextMenuModel navigator_contextmenu = model.navigator_contextmenu;
-		
-		if (is_active)
-		{
-			navigator_contextmenu = navigator_contextmenu.copy({
-				"is_active": is_active,
-				"x": x,
-				"y": y,
-			});
-		}
-		else
-		{
-			navigator_contextmenu = navigator_contextmenu.copy({
-				"is_active": is_active,
-			});
-		}
-		
-		model <= navigator_contextmenu <= navigator_contextmenu;
-		return model;
-	}
-	
-	
-	
-	/**
-	 * Show navigator context menu
-	 */
-	pure Model selectNavigatorPath(Model model, string path)
-	{
-		model <= navigator <= selected <= path;
 		return model;
 	}
 	

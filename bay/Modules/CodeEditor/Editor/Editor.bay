@@ -16,11 +16,11 @@
  *  limitations under the License.
  */
 
-namespace FaydelConsole.Modules.Navigator.Editor;
+namespace FaydelConsole.Modules.CodeEditor.Editor;
 
 use Core.UI.Render.CoreView;
-use FaydelConsole.Modules.Navigator.Editor.EditorManager;
-use FaydelConsole.Modules.Navigator.Editor.EditorModel;
+use FaydelConsole.Modules.CodeEditor.Editor.EditorManager;
+use FaydelConsole.Modules.CodeEditor.Editor.EditorModel;
 
 
 struct Editor extends CoreView

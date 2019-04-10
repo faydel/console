@@ -77,7 +77,7 @@ class ModuleDescription implements ModuleDescriptionInterface
 	public static Map<string, string> getRequiredModules(ContextInterface context){
 		return {
 			'FaydelConsole.Api': '*',
-			'FaydelConsole.Modules.Navigator': '*',
+			'FaydelConsole.Modules.CodeEditor': '*',
 		};
 	}
 	

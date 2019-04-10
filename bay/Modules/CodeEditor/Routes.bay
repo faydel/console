@@ -16,7 +16,7 @@
  *  limitations under the License.
  */
 
-namespace FaydelConsole.Modules.Navigator;
+namespace FaydelConsole.Modules.CodeEditor;
 
 use Runtime.Interfaces.ContextInterface;
 use Core.UI.Annotations.RouteInfo;
@@ -27,11 +27,12 @@ use Core.UI.Render.CoreRoute;
 use Core.UI.Render.CoreLayout;
 use Core.UI.Render.RenderContainer;
 use Core.UI.Render.WebContainer;
+use Core.Components.Navigator.NavigatorItem;
+use Core.Components.Navigator.NavigatorModel;
 use Core.Components.Tree.TreeModel;
 use Core.Components.Tree.TreeItem;
-use FaydelConsole.Modules.Navigator.Model;
-use FaydelConsole.Modules.Navigator.NavigatorItem;
-use FaydelConsole.Modules.Navigator.View;
+use FaydelConsole.Modules.CodeEditor.CodeEditorModel;
+use FaydelConsole.Modules.CodeEditor.CodeEditor;
 
 
 class Routes extends CoreRoute
@@ -55,9 +56,12 @@ class Routes extends CoreRoute
 		);
 		
 		/* Create model */
-		Model model = new Model
+		CodeEditorModel model = new CodeEditorModel
 		{
-			"navigator": new TreeModel{ "items": NavigatorItem::convertFileNodes(res.result) },
+			"navigator": new NavigatorModel{ 
+				"api_class_name": "FaydelConsole.Api.Navigator", 
+				"items": NavigatorItem::convertFileNodes(res.result) 
+			},
 		};
 		
 		/* Add response */
@@ -68,7 +72,7 @@ class Routes extends CoreRoute
 			{
 				"title": "Development Console",
 			},
-			classof View, model
+			classof CodeEditor, model
 		);
 		
 		return container;

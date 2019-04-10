@@ -16,7 +16,7 @@
  *  limitations under the License.
  */
  
-namespace FaydelConsole.Modules.Navigator.Editor;
+namespace FaydelConsole.Modules.CodeEditor.Editor;
 
 use Runtime.CoreStruct;
 

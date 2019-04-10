@@ -16,7 +16,7 @@
  *  limitations under the License.
  */
 
-namespace FaydelConsole.Modules.Navigator.Editor;
+namespace FaydelConsole.Modules.CodeEditor.Editor;
 
 use Core.Components.ContextMenu.ContextMenuItemClickEvent;
 use Core.UI.UIController;
@@ -26,7 +26,7 @@ use Core.UI.Annotations.Event;
 use Core.UI.Annotations.EventAsync;
 use Core.UI.Events.MountEvent;
 use Core.UI.Render.CoreManager;
-use FaydelConsole.Modules.Navigator.Editor.EditorModel;
+use FaydelConsole.Modules.CodeEditor.Editor.EditorModel;
 
 
 class EditorManager extends CoreManager

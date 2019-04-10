@@ -16,38 +16,39 @@
  *  limitations under the License.
  */
 
-namespace FaydelConsole.Modules.Navigator;
+namespace FaydelConsole.Modules.CodeEditor;
 
 use Core.UI.Render.CoreView;
-use FaydelConsole.Modules.Navigator.Assets;
-use FaydelConsole.Modules.Navigator.Manager;
-use FaydelConsole.Modules.Navigator.Model;
-use FaydelConsole.Modules.Navigator.NavigatorItem;
-use FaydelConsole.Modules.Navigator.Editor.Editor;
-use FaydelConsole.Modules.Navigator.Editor.EditorModel;
 use Core.Components.Tabs.Tabs;
 use Core.Components.Tabs.TabsItem;
 use Core.Components.Tree.Tree;
 use Core.Components.Tree.TreeModel;
 use Core.Components.ContextMenu.ContextMenu;
 use Core.Components.ContextMenu.ContextMenuItem;
+use Core.Components.Navigator.Navigator;
+use Core.Components.Navigator.NavigatorItem;
+use FaydelConsole.Modules.CodeEditor.CodeEditorAssets;
+use FaydelConsole.Modules.CodeEditor.CodeEditorManager;
+use FaydelConsole.Modules.CodeEditor.CodeEditorModel;
+use FaydelConsole.Modules.CodeEditor.Editor.Editor;
+use FaydelConsole.Modules.CodeEditor.Editor.EditorModel;
 
 
-struct View extends CoreView
+struct CodeEditor extends CoreView
 {
 	
 	
 	/**
 	 * Returns manager name
 	 */
-	lambda string managerName() => classof Manager;
+	lambda string managerName() => classof CodeEditorManager;
 	
 	
 	
 	/**
 	 * Returns model name
 	 */
-	lambda string modelName() => classof Model;
+	lambda string modelName() => classof CodeEditorModel;
 	
 	
 	
@@ -56,7 +57,7 @@ struct View extends CoreView
 	 */
 	lambda Collection<string> assets() =>
 		[
-			classof Assets,
+			classof CodeEditorAssets,
 		]
 	;
 	
@@ -69,7 +70,7 @@ struct View extends CoreView
 		[
 			classof Tabs,
 			classof Tree,
-			classof ContextMenu,
+			classof Navigator,
 			classof Editor,
 		]
 	;
@@ -125,22 +126,6 @@ struct View extends CoreView
 	
 	
 	
-	/**
-	 * Returns icon by item
-	 */
-	pure string getIcon(NavigatorItem item)
-	{
-		if (item.kind == NavigatorItem::KIND_FOLDER)
-		{
-			if (item.is_open) return "fa fa-folder-open";
-			return "fa fa-folder";
-		}
-		if (item.kind == NavigatorItem::KIND_FILE) return "fa fa-file";
-		return "";
-	}
-	/* public static callback getIcon = method static::getIcon; */
-	
-	
 	
 	/**
 	 * Component render
@@ -154,17 +139,13 @@ struct View extends CoreView
 			</div>
 			<div @class='console_content'>
 				<div @class='console_left'>
-					<Tree @model={ data.navigator } @key='navigator' @control='navigator' 
-						get_icon={ method static::getIcon }></Tree>
+					<Tree @model={ data.navigator } @control='navigator'></Tree>
 				</div>
 				<div @class='console_workspace'>
 					{ static::renderWorkspace(data) }
 				</div>
 			</div>
 		</div>
-		<ContextMenu @model={ data.navigator_contextmenu } @key="navigator_contextmenu" @control="navigator_contextmenu">
-			{ static::renderContextMenuItems(data) }
-		</ContextMenu>
 	;
 	
 	
@@ -175,7 +156,7 @@ struct View extends CoreView
 	pure Collection<UIStruct> renderWorkspace(Model data)
 	{
 		/* Find position by current_open_path */
-		int active_pos = Model::getOpenEditorPos(data);
+		int active_pos = CodeEditorModel::getOpenEditorPos(data);
 		
 		mixed active_tag = null;
 		if (active_pos >= 0)
@@ -195,33 +176,5 @@ struct View extends CoreView
 		;
 	}
 	
-	
-	
-	/**
-	 * Render context menu items
-	 */
-	pure Collection<UIStruct> renderContextMenuItems(Model data)
-	{
-		if (data.navigator.selected == "")
-			return "";
-		
-		Collection<int> path = TreeModel::splitPath( data.navigator.selected );
-		NavigatorItem item = TreeModel::getTreeItem( data.navigator, path );
-		
-		if (item.kind == NavigatorItem::KIND_FOLDER)
-		{
-			return 
-				<ContextMenuItem icon='fa fa-cogs' tag='create_file'>Создать файл</ContextMenuItem>
-				<ContextMenuItem icon='fa fa-cogs' tag='create_directory'>Создать папку</ContextMenuItem>
-				<ContextMenuItem icon='fa fa-trash' tag='delete_node'>Удалить</ContextMenuItem>
-			;
-		}
-		else
-		{
-			return 
-				<ContextMenuItem icon='fa fa-trash' tag='delete_node'>Удалить</ContextMenuItem>
-			;
-		}
-	}
 	
 }
