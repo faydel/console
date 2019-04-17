@@ -139,7 +139,7 @@ struct CodeEditor extends CoreView
 			</div>
 			<div @class='console_content'>
 				<div @class='console_left'>
-					<Tree @model={ data.navigator } @control='navigator'></Tree>
+					<Navigator @model={ data.navigator } @control='navigator'></Navigator>
 				</div>
 				<div @class='console_workspace'>
 					{ static::renderWorkspace(data) }
